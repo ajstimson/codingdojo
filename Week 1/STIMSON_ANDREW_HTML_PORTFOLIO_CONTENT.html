@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Portfolio</title>
+        <meta name="description" content="Just some info about Brux Feeblewitz">
+        <link
+            href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
+            rel="stylesheet">
+        <style>
+            * {
+                font-family: sans-serif;
+            }
+            th,        
+            tr:not(:last-of-type) {
+                border-bottom: 2px solid #000;
+            }
+            th,        
+            tr{
+                padding-right: 10px;
+            }
+            td{
+                font-weight: normal;
+            }
+            tr>th:not(:last-of-type),
+            tr>td:not(:last-of-type) {
+                border-right: 2px solid #000;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Brux Feeblewitz</h1>
+        <div>
+            <img src="./assets/portfolio-avatar.jpg" alt="portfolio avatar"
+                width="125px" height="125px">
+        </div>
+        <div>
+            <ul type="none" style="padding:0">
+                <li style="display:inline"><i class="icon-github" style="font-size:1.75em"></i> <a href="#">my github</a>&nbsp;</li>
+                <li style="display:inline"><i class="icon-linkedin-sign" style="font-size:1.75em"></i> <a href="#">my linkedin</a>&nbsp;</li>
+                <li style="display:inline"><i class="icon-envelope" style="font-size:1.75em"></i> <a href="#">my email</a></li> 
+            </ul>
+        </div>
+        <div>
+            <h2>Technologies</h2>
+            <table style="border-collapse:collapse;">
+                <thead>
+                    <tr>
+                        <th><strong>Front-End</strong></th>
+                        <th><strong>Python</strong></th>
+                        <th><strong>JavaScript</strong></th>
+                        <th><strong>Database</strong></th>
+                        <th><strong>Concepts</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HTML5</td>
+                        <td>Django</td>
+                        <td>Express</td>
+                        <td>MySQL</td>
+                        <td>AJAX</td>
+                    </tr>
+                    <tr>
+                        <td>CSS3</td>
+                        <td>Flask</td>
+                        <td>Mongoose</td>
+                        <td>MongoDB</td>
+                        <td>OOP</td>
+                    </tr>
+                    <tr>
+                        <td>Bootstrap</td>
+                        <td>Unittest</td>
+                        <td>React</td>
+                        <td></td>
+                        <td>REST</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h2>Social Snakes</h2>
+            <div style="width:55px">
+                <p style="border:2px solid #333; margin:0;padding:15px 0px"><i class="icon-code" style="display:block;font-size:2em;text-align:center"></i></p>
+            </div>
+            <p>Social Media App made in Python - <a href="#">code</a> | <a href="#">deployed</a></p>
+        </div>
+        <form action="/">
+            <h2>Contact Me</h2>
+            <div>
+                <label for="name">Name: </label>
+                <input type="text" id="name" name="name" style="max-width:75px;" />
+                <label for="email">Email: </label>
+                <input type="text" id="email" name="email" style="max-width:75px;" />
+            </div>
+            <div style="padding-top:10px">
+                <label for="message" style="vertical-align: top;">Message: </label>
+                <textarea rows="2" cols="22" name="message" id="message"></textarea>
+            </div>
+            <input type="submit" value="Send Message" />
+        </form>
+    </body>
+</html>
