@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Profile Page</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Itim">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <link rel="stylesheet" type="text/css" href="./style.css">
+    </head>
+    <body>
+        <nav>
+            <div class="row">
+                <h1>Dojonary</h1>
+                <input type="text" name="search" id="search" placeholder="Search">
+                <button class="btn btn-login" onclick="toggleState(this)">Login</button>
+            </div>
+        </nav>
+        <main>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="row">
+                            <div class="cell info">
+                                <h2>ninja</h2>
+                                <p>
+                                    <em>
+                                        noun
+                                    </em>
+                                </p>
+                                <p>
+                                    Plural: <em>ninjas</em>
+                                </p>
+                                <button class="btn btn-like" data="def-1" onclick="likeAlert(event)"><span>13</span> Likes</button>
+                            </div>
+                            <div class="cell definition">
+                                <p>A practitioner skilled in the <a href="#">Japanese</a> art of <a href="#">ninjitsu</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="row">
+                            <div class="cell info">
+                                <h2>ninja</h2>
+                                <p>
+                                    <em>
+                                        noun
+                                    </em>
+                                </p>
+                                <p>
+                                    Plural: <em>ninjas</em>
+                                </p>
+                                <button class="btn btn-like" data="def-2" onclick="likeAlert(event)""><span>37</span> Likes</button>
+                            </div>
+                            <div class="cell definition">
+                                <p>A <a href="#">programmer</a> who breaks down problems with <a href="#">zen</a>-like focus</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card">
+                        <h2>Dojonary is defined by <strong>YOU</strong></h2>
+                        <button class="btn btn-definition" onclick="removeBtn(this)"">Add Definition</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+    <script src="./script.js"></script>
+</html>
