@@ -20,30 +20,38 @@
                 <div class="col">
                     <div class="card">
                         <div class="row">
-                            <div class="cell info">
-                                <video src="/assets/pexels-mart-production-7565881.mp4">
-
-                                </video>
-                                <div id="video-controls">
-                                    <div class="row">
-                                        <button id="playpause" type="button" data-state="play"><i class="fa fa-play-circle"></i></button>
-                                        <div class="progress">
-                                            <progress id="progress" value="0" min="0">
-                                               <span id="progress-bar"></span>
-                                            </progress>
-                                         </div>
-                                         <!-- TODO: Insert volume SVG Here -->
-                                         <button id="mute" type="button" data-state="mute">Volume</button>
-                                         <i class="fa fa-expand"></i>
+                            <div class="cell video">
+                                <div class="video-wrap">
+                                    <div class="video-player">
+                                        <video src="/assets/pexels-mart-production-7565881.mp4" />
                                     </div>
-                                    
+                                    <div id="video-controls">
+                                        <div class="row">
+                                            <button id="playpause" type="button" data-state="play"><i class="fa fa-play-circle"></i></button>
+                                            <div class="progress">
+                                                <progress id="progress" value="0" min="0">
+                                                   <span id="progress-bar"></span>
+                                                </progress>
+                                             </div>
+                                             <!-- TODO: Insert volume SVG Here -->
+                                             <button id="mute" type="button" data-state="mute">
+                                                <img src="/assets/minimal-speaker-icon.svg" width="25px" height="25px"></object>
+                                             </button>
+                                             <div id="expand">
+                                                 <i class="fa fa-expand"></i>
+                                             </div>
+                                        </div>
+                                        
+                                    </div>
                                 </div>
-                                <div class="row">
-                                    <h2>Example Video Title</h2>
-                                    <p>1.3k views | June 18, 2021</p>
+                                <div class="row video-details">
+                                    <div class="cell">
+                                        <h2>Example Video Title</h2>
+                                        <p>1.3k views | June 18, 2021</p>
+                                    </div>
                                     <button class="btn btn-subscribe">Subscribe</button>
                                 </div>
-                                <div class="row">
+                                <div class="row profile">
                                     <div class="pic-wrapper">
                                         <img src="/assets/burns.png" alt="Montgomery Burns">
                                     </div>

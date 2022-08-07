@@ -8,7 +8,7 @@
 body {
     display: flex;
     flex-direction: column;
-    margin: 0 5%;
+    margin: 0 10%;
 }
 
 h1{
@@ -22,8 +22,10 @@ h2{
 p, a, input, span, em, strong, button{
     font-family: Roboto, sans-serif;
 }
+
 nav{
-    background-color: #ccc;
+    background-color: #333;
+    border-top: 8px solid #9900ff;
     padding: 15px 25px;
 }
 
@@ -33,6 +35,10 @@ nav{
 
 nav .row{
     justify-content: space-between;
+}
+
+nav h1{
+    color: #fff;
 }
 
 nav input, .btn{
@@ -53,11 +59,15 @@ nav input{
     cursor: pointer;
 }
 
-.btn-login{
-    background-color: #2b78e4;
+.btn-login,
+.btn-subscribe{
+    background-color: #9900ff;
     color: #fff;
-    min-width: 100px;
     padding: 0 15px;
+}
+
+.btn-login{   
+    min-width: 100px;
 }
 
 .btn-like{
@@ -87,44 +97,173 @@ main .row>.col:last-of-type{
     flex-grow: 1;
 }
 
-.card{
-    padding: 25px 15px;
-    border: 2px solid #000;
-}
-
-.card+.card{
-    margin-top: 25px;
-}
-
 .cell{
     display: flex;
     flex-direction: column;
 }
 
-.card h2,
-.card p{
-    text-align: center;
-    line-height: 1.5;
+.cell.video{
+    margin-right: 50px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.video-wrap{
+    border: 2px solid #333
+}
+
+.video-player{
+    background-color: #000;
+    height: 400px;
+}
+
+video{
+    width: 100%;
+    max-height: 400px;
+    margin: 0 auto;
+}
+
+.video-wrap+.row{
+    margin-top: 15px;
+}
+
+#video-controls>.row{
+    justify-content: space-between;
+    padding: 2px 5px;
+}
+
+#video-controls button{
+    background-color: #fff;
+    border: none;
+}
+
+#video-controls .progress{
+    flex-grow: 1;
+}
+
+#video-controls>.row>*,
+#video-controls object{
+    cursor: pointer;
+}
+
+.progress{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 5px;
+}
+
+.progress progress{
+    width: 100%;
+}
+
+#playpause i{
+    font-size: 3em;
+}
+
+#mute{
+    margin: 0 5px;
+}
+
+#mute img{
+    margin-top: 2px;
+}
+
+#expand{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 25px;
+    margin: 0 5px;
+}
+
+#expand i{
+    font-size: 25px;
 }
 
 .card p{
     font-size: 1.2em;
 }
 
-.cell.info{
-    margin-right: 50px;
+.card h2,
+.card p{
+    line-height: 1.5;
 }
 
-.cell.definition{
-    justify-content: center;
+.video-details .cell{
+    flex-grow: 1;
 }
 
-.row>.col:last-of-type .card h2{
-    text-align: left;
-    font-weight: normal;
+.video-details .btn{
+    align-self: center;
 }
 
-.row>.col:last-of-type .card h2 strong{
-    font-family: Itim, sans-serif;
-    font-weight: 900;
+.profile{
+    align-items: center;
+}
+
+.pic-wrapper, .pic-wrapper img{
+    border-radius: 50%;
+}
+
+.pic-wrapper{
+    background-color: #000;
+}
+
+.pic-wrapper img{
+    border: 2px solid #333;
+    width: 50px;
+}
+
+.profile{
+    margin-top: 10px;
+}
+
+.profile p{
+    margin-left: 10px;
+}
+
+.profile a{
+    color:#9900ff;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.col-header{
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000;
+}
+
+.col-header p{
+    font-weight: bold;
+}
+
+.video-col{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.video-col .row{
+    align-items: center;
+}
+
+.video-col .row:not(:first-of-type){
+    margin-top: 25px;
+}
+
+.box{
+    border: 3px solid #9900ff;
+    padding: 15px 45px;
+}
+
+.box i{
+    color:#9900ff;
+    font-size: 3.5em;
+}
+
+.video-col p{
+    margin-left: 15px;
+    font-weight: bold;
 }
