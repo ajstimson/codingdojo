@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Itim, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0 5%;
+}
+
+h1{
+    font-size: 2.5em;
+}
+
+h2{
+    font-size: 2em;
+}
+
+p, a, input, span, em, strong, button{
+    font-family: Roboto, sans-serif;
+}
+nav{
+    background-color: #ccc;
+    padding: 15px 25px;
+}
+
+.row{
+    display: flex;
+}
+
+nav .row{
+    justify-content: space-between;
+}
+
+nav input, .btn{
+    border: 2px solid #000;
+}
+
+nav input{
+    flex-grow: 1;
+    max-width: 400px;
+    padding: 0 5px;
+    font-size: 1.25em;
+}
+
+.btn{
+    padding: 5px 25px;
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.btn-login{
+    background-color: #2b78e4;
+    color: #fff;
+    min-width: 100px;
+    padding: 0 15px;
+}
+
+.btn-like{
+    margin-top: 25px;
+    background-color: #ffd966;
+}
+
+.btn-like span{
+    pointer-events: none;
+}
+
+.btn-definition{
+    margin-top: 25px;
+    background-color: #93c47d;
+}
+
+main{
+    margin-top: 25px;
+}
+
+main .row>.col:first-of-type{
+    flex-basis: 70%;
+    margin-right: 25px;
+}
+
+main .row>.col:last-of-type{
+    flex-grow: 1;
+}
+
+.card{
+    padding: 25px 15px;
+    border: 2px solid #000;
+}
+
+.card+.card{
+    margin-top: 25px;
+}
+
+.cell{
+    display: flex;
+    flex-direction: column;
+}
+
+.card h2,
+.card p{
+    text-align: center;
+    line-height: 1.5;
+}
+
+.card p{
+    font-size: 1.2em;
+}
+
+.cell.info{
+    margin-right: 50px;
+}
+
+.cell.definition{
+    justify-content: center;
+}
+
+.row>.col:last-of-type .card h2{
+    text-align: left;
+    font-weight: normal;
+}
+
+.row>.col:last-of-type .card h2 strong{
+    font-family: Itim, sans-serif;
+    font-weight: 900;
+}

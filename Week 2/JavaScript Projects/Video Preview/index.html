@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>VideoLab</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Itim">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"">
+        <link rel="stylesheet" type="text/css" href="./style.css">
+    </head>
+    <body>
+        <nav>
+            <div class="row">
+                <h1>VideoLab</h1>
+                <input type="text" name="search" id="search" placeholder="Search">
+                <button class="btn btn-login" onclick="toggleState(this)">Login</button>
+            </div>
+        </nav>
+        <main>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="row">
+                            <div class="cell info">
+                                <video src="/assets/pexels-mart-production-7565881.mp4">
+
+                                </video>
+                                <div id="video-controls">
+                                    <div class="row">
+                                        <button id="playpause" type="button" data-state="play"><i class="fa fa-play-circle"></i></button>
+                                        <div class="progress">
+                                            <progress id="progress" value="0" min="0">
+                                               <span id="progress-bar"></span>
+                                            </progress>
+                                         </div>
+                                         <!-- TODO: Insert volume SVG Here -->
+                                         <button id="mute" type="button" data-state="mute">Volume</button>
+                                         <i class="fa fa-expand"></i>
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+                                    <h2>Example Video Title</h2>
+                                    <p>1.3k views | June 18, 2021</p>
+                                    <button class="btn btn-subscribe">Subscribe</button>
+                                </div>
+                                <div class="row">
+                                    <div class="pic-wrapper">
+                                        <img src="/assets/burns.png" alt="Montgomery Burns">
+                                    </div>
+                                    <p><a href="#">Montgomery Burns</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="col-header">
+                        <p>Up Next</p>
+                    </div>
+                    <div class="video-col">
+                        <div class="row">
+                            <div class="box">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <p>Not a Rick Roll</p>
+                        </div>
+                        <div class="row">
+                            <div class="box">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <p>10 Facts About ET's Cat</p>
+                        </div>
+                        <div class="row">
+                            <div class="box">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <p>5 Cosplay Tips</p>
+                        </div>
+                        <div class="row">
+                            <div class="box">
+                                <i class="fa fa-play"></i>
+                            </div>
+                            <p>Boy Battles Dinobot in Thunderdome</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+    <script src="./script.js"></script>
+</html>
