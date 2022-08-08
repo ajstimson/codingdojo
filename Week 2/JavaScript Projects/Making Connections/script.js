@@ -96,7 +96,3 @@ for (request of requests) {
     choice ? (connections.innerHTML = cNum + 1) : null;
   });
 }
-
-// document.querySelectorAll(".choice i").addEventListener("click", function (e) {
-//   console.log(e.target);
-// });

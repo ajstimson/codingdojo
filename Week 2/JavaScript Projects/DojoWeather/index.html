@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>DojoWeather</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Itim">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <link rel="stylesheet" type="text/css" href="./style.css">
+    </head>
+    <body>
+        <nav>
+            <div class="row">
+                <h1>DojoWeather</h1>
+                <div class="row options">
+                    <a id="Burbank" class="active" href="#">Burbank</a>
+                    <a id="Chicago" href="#">Chicago</a>
+                    <a id="Dallas" href="#">Dallas</a>
+                </div>
+            </div>
+        </nav>
+        <main>
+            <div class="row header">
+                <h2 id="city">Burbank</h2>
+                <div class="units">
+                    <p>show temperature in<p></p> 
+                    <select name="unit" id="unit">
+                        <option value="c">C°</option>
+                        <option value="f">F°</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row days">
+                <div class="col">
+                    <div class="card">
+                        <div class="cell">
+                            <h2>Today</h2>
+                            <div class="weather-wrap">
+                                <img src="/assets/some_rain.png" alt="clouds with rain">
+                            </div>
+                            <p class="description">some rain</p>
+                            <div class="row temps">
+                                <h3 class="high"><span data-unit="c">24</span>°</h3>
+                                <h3 class="low"><span data-unit="c">18</span>°</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="cell">
+                            <h2>Tomorrow</h2>
+                            <div class="weather-wrap">
+                                <img src="/assets/some_sun.png" alt="sun">
+                            </div>
+                            <p class="description">some sun</p>
+                            <div class="row temps">
+                                <h3 class="high"><span data-unit="c">27</span>°</h3>
+                                <h3 class="low"><span data-unit="c">19</span>°</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="cell">
+                            <h2>Friday</h2>
+                            <div class="weather-wrap">
+                                <img src="/assets/some_clouds.png" alt="clouds">
+                            </div>
+                            <p class="description">some clouds</p>
+                            <div class="row temps">
+                                <h3 class="high"><span data-unit="c">21</span>°</h3>
+                                <h3 class="low"><span data-unit="c">16</span>°</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="cell">
+                            <h2>Saturday</h2>
+                            <div class="weather-wrap">
+                                <img src="/assets/some_sun.png" alt="sun">
+                            </div>
+                            <p class="description">some sun</p>
+                            <div class="row temps">
+                                <h3 class="high"><span data-unit="c">26</span>°</h3>
+                                <h3 class="low"><span data-unit="c">21</span>°</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cookie-alert">
+                <div class="row">
+                    <div class="cookie-wrap">
+                        <img src="/assets/cookie.png" alt="cookie">
+                    </div>
+                    <div class="cell">
+                        <h3>Stop! Cookie Time</h3>
+                        <p>
+                            Quisque eu nisl vitae felis lobortis molestie. Praesent faucibus pretium arcu et cursus. Cras hendrerit ex eget arcu gravida, eget semper quam fringilla. Ut tincidunt est odio.
+                            <a href="#">Read more...</a>
+                        </p>
+                    </div>
+                    <button class="btn btn-accept" onclick="removeThyself(event)">I Accept</button>
+                </div>
+                
+            </div>
+        </main>
+    </body>
+    <script src="./script.js"></script>
+</html>

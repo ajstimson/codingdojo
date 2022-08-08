@@ -1,0 +1,182 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Itim, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+h1{
+    font-size: 3.5em;
+    color: #fff;
+}
+
+h2, h3{
+    font-size: 2em;
+}
+
+p, a, input, span, em, strong, button{
+    font-family: Roboto, sans-serif;
+}
+nav{
+    background-color: #9fc5f8;
+    padding: 15px 25px;
+}
+
+nav a{
+    font-size: 2em;
+    color: #fff;
+    text-decoration: none;
+}
+
+.row{
+    display: flex;
+}
+
+nav>.row{
+    margin: 0 14%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .row>.row{
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+nav .row>a:not(:last-of-type){
+    margin-right: 50px;
+}
+
+.btn{
+    padding: 5px 25px;
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.btn-accept{
+    background-color: #9fc5f8;
+    padding: 0 15px;
+}
+
+main{
+    margin: 50px 15%;
+}
+
+.row.header+.row{
+    margin-top: 25px;
+    justify-content: space-between;
+    margin-bottom: 100px;
+}
+
+.card{
+    padding: 30px;
+    background-color: #eee;
+}
+
+.cell{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card h2{
+    margin-bottom: 15px;
+}
+
+.weather-wrap{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.weather-wrap img{
+    border-radius: 50%;
+    width: 100%;
+}
+
+.card p{
+    font-size: 1.2em;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.row.temps{
+    width: 100%;
+    padding: 0 15%;
+    justify-content: space-between;
+}
+
+.temps .high{
+    color: #f00;
+}
+
+.temps .low{
+    color:cornflowerblue;
+}
+
+.header{
+    border-bottom: 3px solid #000;
+    padding-bottom: 15px;
+}
+
+#city{
+    font-size: 3em;
+}
+
+.row .units{
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.units p{
+    margin-right: 7px;
+}
+
+select{
+    height: 30px;
+    width: 50px;
+    font-size: 1.25em;
+}
+
+#cookie-alert{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 10px 15px;
+    width: 100%;
+}
+
+#cookie-alert .row{
+    align-items: center;
+    background-color: #eee;
+    border: 3px solid #000;
+    max-width: 69.5vw;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
+
+#cookie-alert .cell{
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+#cookie-alert h3{
+    text-align: left;
+    font-size: 1.5em;
+}
+
+#cookie-alert button{
+    font-size: 1em;
+    height: 36px;
+    width: 105px;
+}
