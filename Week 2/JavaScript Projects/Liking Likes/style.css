@@ -1,0 +1,136 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Itim, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0 15%;
+}
+
+h1{
+    font-size: 2.5em;
+    color: #fff;
+}
+
+h2, h3{
+    font-size: 2em;
+}
+
+p, a, input, span, em, strong, button{
+    font-family: Roboto, sans-serif;
+}
+nav{
+    background-color: #000;
+    padding: 15px 25px;
+}
+
+.row{
+    display: flex;
+}
+
+nav .row{
+    justify-content: space-between;
+}
+
+nav input, .btn{
+    border: 2px solid #000;
+}
+
+nav input{
+    flex-grow: 1;
+    max-width: 400px;
+    padding: 0 5px;
+    font-size: 1.25em;
+}
+
+.btn{
+    padding: 5px 25px;
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+.btn-like{
+    background-color: #ffd966;
+}
+
+main .row>.col:first-of-type{
+    flex-basis: auto;
+    margin-top: 58px;
+    margin-right: 25px;
+}
+
+main .row>.col:last-of-type{
+    flex-grow: 1;
+    margin-top: 10px;
+}
+
+main .row>.col h2{
+    margin-bottom: 10px;
+}
+
+.card{
+    padding: 30px;
+    border: 2px solid #000;
+}
+
+.card+.card{
+    margin-top: 25px;
+}
+
+.profile .cell{
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.profile .cell>*:not(:last-child){
+    margin-bottom: 25px;
+}
+
+.pic-wrapper, .pic-wrapper img{
+    border-radius: 50%;
+}
+
+.pic-wrapper{
+    border: 10px solid #333;
+}
+
+.pic-wrapper img{
+    width: 150px;
+    vertical-align: middle;
+}
+
+.cell{
+    display: flex;
+    flex-direction: column;
+}
+
+.card p{
+    font-size: 1.2em;
+}
+
+.feed .row{
+    flex-wrap: wrap;
+}
+.feed h3{
+    align-self: flex-start;
+    flex-grow: 1;
+}
+
+.feed .num-likes,
+.feed button {
+    align-self: flex-start;
+    justify-items: flex-end;
+}
+
+.feed .num-likes{
+    margin-right: 50px;
+}
+
+.feed .comment{
+    flex-basis: 100%;
+    margin-top: 25px;
+}
