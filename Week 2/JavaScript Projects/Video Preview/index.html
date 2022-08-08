@@ -12,7 +12,7 @@
             <div class="row">
                 <h1>VideoLab</h1>
                 <input type="text" name="search" id="search" placeholder="Search">
-                <button class="btn btn-login" onclick="toggleState(this)">Login</button>
+                <button class="btn btn-login">Login</button>
             </div>
         </nav>
         <main>
@@ -23,23 +23,24 @@
                             <div class="cell video">
                                 <div class="video-wrap">
                                     <div class="video-player">
-                                        <video src="/assets/pexels-mart-production-7565881.mp4" />
+                                        <video id="video" muted="muted" src="/assets/pexels-mart-production-7565881.mp4" />
                                     </div>
                                     <div id="video-controls">
                                         <div class="row">
-                                            <button id="playpause" type="button" data-state="play"><i class="fa fa-play-circle"></i></button>
+                                            <button id="playpause" type="button" data-state="play" onclick="videoPlayPause(event)"><i class="fa fa-play-circle"></i></button>
                                             <div class="progress">
-                                                <progress id="progress" value="0" min="0">
-                                                   <span id="progress-bar"></span>
+                                                <div id="timer" for="progress" role="timer"></div>
+                                                <progress id="progress" value="0" min="0" max="100">
+                                                    <span id="progress-bar"></span>
                                                 </progress>
-                                             </div>
-                                             <!-- TODO: Insert volume SVG Here -->
-                                             <button id="mute" type="button" data-state="mute">
-                                                <img src="/assets/minimal-speaker-icon.svg" width="25px" height="25px"></object>
-                                             </button>
-                                             <div id="expand">
-                                                 <i class="fa fa-expand"></i>
-                                             </div>
+                                            </div>
+                                            <!-- TODO: Insert volume SVG Here -->
+                                            <button id="mute" type="button">
+                                                <img id="unmute" src="/assets/minimal-speaker-icon.svg" width="25px" height="25px"></object>
+                                            </button>
+                                            <div id="fullscreen">
+                                                <i class="fa fa-expand"></i>
+                                            </div>
                                         </div>
                                         
                                     </div>
@@ -96,5 +97,5 @@
             </div>
         </main>
     </body>
-    <script src="./script.js"></script>
+    <script src="./script.js" defer></script>
 </html>
