@@ -1,0 +1,405 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Roboto, sans-serif;
+}
+
+body, .nav, ul.nav-links{
+    display: flex;
+    margin: 0;
+}
+
+body{
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+}
+
+.modal{
+    display: none;
+}
+
+.modal.show {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #75757564;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+}
+
+body>.modal.show>*{
+    z-index: 0;
+}
+
+.modal .cell{
+    background-color: #fff;
+    box-shadow: 5px 5px 0px 0px rgba(0,0,0,.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+
+.modal h2{
+    flex-grow: 1;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.modal input[type=text]{
+    border-radius: 15px;
+    border: 2px solid #333;
+    font-size: 1.25em;
+    margin-bottom: 25px;
+    padding: 10px;
+}
+
+.modal .cell>.row{
+    justify-content: center;
+}
+
+.nav{
+    background-color: #333;
+    color: #fff;
+}
+
+.nav, article{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.nav .wrap, 
+article .wrap{
+    margin: 0 15vw;
+}
+
+.nav .wrap{
+    padding: 15px 0;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.nav .row{
+    justify-content: space-between;
+}
+
+.nav h1{
+    margin: 0;
+}
+
+.nav ul{
+    display: flex;
+    text-align: right;
+    align-items: center;
+    flex-grow: 1;
+    padding-left: 25px;
+}
+
+.nav li{
+    list-style: none;
+    padding: 0 15px;
+}
+
+.nav li:last-of-type{
+    flex-grow: 1;
+    padding: 0;
+}
+
+.nav a,
+.nav button{
+    text-decoration: none;
+    color: #fff;
+}
+
+.nav ul>li:nth-child(2){
+    font-weight: bold;
+}
+
+.nav button{
+    background-color: #17a2b8;
+}
+
+.nav button,
+.modal input[type=submit],
+.modal button {
+    color: #fff;
+    border: 3px solid #000;
+    box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+    padding: 5px 15px;
+    font-size: 1.2em;
+}
+
+.modal input[type=submit]{
+    background-color: green;
+    margin-right: 25px;
+}
+
+.modal button#cancel{
+    background-color: #f00;
+}
+
+article{
+    margin-bottom: 5%;
+}
+
+article .row{
+    padding-top: 50px;
+}
+
+article .col{
+    flex-basis: calc(60% - 40px);
+    margin-right: 40px;
+}
+
+article .col-2{
+    flex-basis: 40%;
+}
+
+.card{
+    margin: 0 auto 50px;
+    border: 3px solid #ccc;
+}
+
+.card .header{
+    height: 100px;
+    background-color: #17a2b8;
+    border: none;
+}
+
+.profile{
+    position: relative;
+    padding: 0 50px 30px;
+}
+
+.pic-wrapper, .pic-wrapper img{
+    border-radius: 50%;
+}
+
+.card .pic-wrapper{
+    position: absolute;
+    top: -30%;
+    left: 5%;
+}
+
+.card .pic-wrapper{
+    padding: 7px;
+    background-color: #fff;
+    border: 7px solid #ccc;   
+}
+
+.card img{
+    width: 150px;
+    border: 7px solid #333;
+    vertical-align: middle;
+}
+
+.card h2{
+    padding-top: 105px;
+    font-size: 2.75em;
+}
+
+.card h3{
+    padding-top: 2%;
+    padding-left: 2px;
+}
+
+.location-pin{
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3C!--! Font Awesome Pro 6.1.2 by %40fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons  Inc. --%3E%3Cpath d='M168.3 499.2C116.1 435 0 279.4 0 192C0 85.96 85.96 0 192 0C298 0 384 85.96 384 192C384 279.4 267 435 215.7 499.2C203.4 514.5 180.6 514.5 168.3 499.2H168.3zM192 256C227.3 256 256 227.3 256 192C256 156.7 227.3 128 192 128C156.7 128 128 156.7 128 192C128 227.3 156.7 256 192 256z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin-right: 10px;
+    width: 20px;
+    height: 24px;
+}
+
+.card h3 span+span{
+    vertical-align: top;
+}
+
+.description{
+    padding-top: 2%;
+}
+
+.description ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.description ul>li{
+    list-style: none;
+    font-size: 1.2em;
+}
+
+.description ul>li:first-of-type,
+.description ul>li:nth-child(2){
+    margin-right: 5px;
+}
+
+.description ul>li:last-of-type{
+    flex-basis: 100%;
+}
+
+.edit{
+    padding-top: 2%;
+}
+
+.edit a{
+    color: #085394;
+    text-decoration: none;
+}
+
+.edit i{
+    margin-right: 7px;
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+.edit a span{
+    text-decoration: underline;
+    vertical-align: text-top;
+}
+
+.details, 
+.requests, 
+.connections {
+    width: 100%;
+}
+
+.header {
+    border: 3px solid #333;
+    background-color: #333;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+}
+
+.header p{
+    border-radius: 50%;
+    background-color: #ccc;
+    line-height: 1;
+    padding: 7px;
+    min-width: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.header h2{
+    color: #fff;
+    margin-left: 10px;
+}
+
+.header+.content{
+    border-bottom: 3px solid #ccc;
+    border-left: 3px solid #ccc;
+    border-right: 3px solid #ccc;
+    background-color: #fff;
+}
+
+.requests .pic-wrapper,
+.connections .pic-wrapper {
+    border: 5px solid #333;
+}
+
+.requests .pic-wrapper img,
+.connections .pic-wrapper img{
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.details .content li,
+.requests .content li,
+.connections .content li {
+    list-style: none;
+}
+
+.details .content{
+    padding: 25px;
+}
+
+.details .content li:first-of-type{
+    margin-bottom: 25px;
+}
+
+.details h3{
+    font-size: 1.5em;
+}
+
+.details .date{
+    color: #757575;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.requests{
+    margin-bottom: 50px;
+}
+
+.requests ul,
+.connections ul {
+    display: flex;
+}
+
+.requests .content,
+.connections .content {
+    padding: 25px 15px;
+}
+
+.requests .content>ul:not(:last-of-type),
+.connections .content>ul:not(:last-of-type) {
+    margin-bottom: 25px;
+}
+
+.name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 10px;
+    flex-grow: 2;
+}
+.name p{
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+.requests .choice{
+    flex-grow: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.requests .choice i{
+    font-size: 1.75em;
+    cursor: pointer;
+}
+
+.requests .choice i:first-of-type{
+    color: green;
+    margin-right: 5px;
+}
+
+.requests .choice i:last-of-type{
+    color: red;
+}
+
+.content-footer{
+    border-left: 3px solid #ccc;
+    border-right: 3px solid #ccc;
+    border-bottom: 3px solid #ccc;
+    padding: 10px 0 15px 20px;
+    font-size: 1.33em;
+}
