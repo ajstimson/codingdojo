@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dojo Pizzeria</title>
+    <style>
+        *{
+            font-family: sans-serif;
+            line-height: 1.2;
+        }
+        body{
+            background-color: #333;
+            margin: 5% 15%;
+            padding: 15px;
+        }
+        body *{
+            color: #fff;
+        }
+        strong{
+            color: orange;
+        }
+        button{
+            background-color: rgb(187, 0, 255);
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            padding:5px 15px;
+            cursor: pointer;
+            height: 50px;
+            flex-shrink: 0;
+        }
+        li{
+            margin-bottom: 25px;
+            width: 50%;
+        }
+        .row{
+            display: flex;
+        }
+        code{    
+            flex-grow: 1;
+            padding: 15px;        
+            background-color: #605454;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dojo Pizzeria</h1>
+    <ol>
+        <li>
+            <p>Create a function called pizzaOven that returns a JavaScript (Pizza) Object</p>
+            <div class="row">
+                <button onclick="pizzaOven(event, {
+                    crust: ['thin'],
+                    sauce: ['marinara'],
+                    cheese: ['pecorino-romano'],
+                    toppings: ['basil', 'garlic'],
+                });">Make a Pizza!</button>
+                <code>
+                    <span class="comment">//Output<br></span>
+                </code>
+            </div>
+        </li>
+        <li>
+            <p>Create a pizza with: "deep dish", "traditional", ["mozzarella"], and ["pepperoni", "sausage"]</p>
+            <div class="row">
+                <button onclick="pizzaOven(event, {
+                    crust: ['deep dish'],
+                    cheese: ['mozzarella'],
+                    toppings: ['pepperoni', 'sausage'],
+                });">Make a Pizza!</button>
+                <code>
+                    <span class="comment">//Output<br></span>
+                </code>
+            </div>
+        </li>
+        <li>
+            <p>Create a pizza with: "hand tossed", "marinara", ["mozzarella", "feta"], and ["mushrooms", "olives", "onions"]</p>
+            <div class="row">
+                <button onclick="pizzaOven(event, {
+                    crust: ['hand tossed'],
+                    sauce: ['marinara'],
+                    cheese: ['mozzarella', 'feta'],
+                    toppings: ['mushrooms', 'olives', 'onions'],
+                });">Make a Pizza!</button>
+                <code>
+                    <span class="comment">//Output<br></span>
+                </code>
+            </div>
+        </li>
+        <li>Create 2 more pizzas with any toppings we like!</li>
+        <div class="row">
+            <button onclick="pizzaOven(event, {
+                crust: ['Chicago'],
+                sauce: ['marinara'],
+                cheese: ['pecorino-romano', 'paremesan'],
+                toppings: ['pepperoni', 'sausage', 'ham', 'bacon','pickled peppers'],
+            });">Make a Pizza!</button>
+            <code>
+                <span class="comment">//Output<br></span>
+            </code>
+        </div>
+        <div class="row">
+            <button onclick="pizzaOven(event, {
+                crust: ['Neapolitan'],
+                sauce: ['marinara'],
+                cheese: ['none'],
+                toppings: ['mushrooms', 'pepperoni'],
+            });">Make a Pizza!</button>
+            <code>
+                <span class="comment">//Output<br></span>
+            </code>
+        </div>
+        <li>
+            <p>Bonus Challenge: Create a function called randomPizza that uses Math.random() to create a random pizza!</p>
+            <div class="row">
+                <button onclick="randomPizza(event);">Make a RANDOM Pizza!</button>
+                <code>
+                    <span class="comment">//Output<br></span>
+                </code>
+            </div>
+        </li>
+    </ol>
+</body>
+<script src="script.js"></script>
+</html>
