@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Challenges</title>
+    <style>
+        *{
+            font-family: sans-serif;
+            line-height: 1.2;
+        }
+        body{
+            background-color: #333;
+            margin: 5% 15%;
+        }
+        body *{
+            color: #fff;
+        }
+        strong{
+            color: orange;
+        }
+        button{
+            background-color: rgb(187, 0, 255);
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            padding:5px 15px;
+            cursor: pointer;
+        }
+        ol{
+            width: 50%;
+        }
+        li{
+            margin-bottom: 10px;
+            border-bottom: 3px solid #605454;
+        }
+        .exe{
+            margin: 15px 0;
+        }
+        .ex{
+            color: aqua;
+        }
+        code{            
+            background-color: #605454;
+            display: block;
+        }
+        code.example{
+            padding: 15px 25px;
+            color:blanchedalmond;
+            line-height: 2;
+        }
+        code.example span{
+            color:rgb(0, 0, 152);
+        }
+        code.example .comment{
+            color:darkgrey;
+        }
+        code.result{
+            padding: 5px 25px;
+        }
+        .output{
+            color:#f00;
+            font-weight: bold;
+            padding-bottom: 5px;
+            width: 100%;
+            border-bottom: 3px #fff solid;
+        }
+    </style>
+</head>
+<body>
+    <h1>Array Challenges</h1>
+    <ol>
+        <li id="a"><h3>Always Hungry</h3>
+            <p>Write a function that is given an array and each time the value is <strong>"food"</strong> it should console log <strong>"yummy"</strong>. If <strong>"food"</strong> was not present in the array console log <strong>"I'm hungry"</strong> once.</p>
+            <div class="exe">
+                <button id="first" onclick="hungryArrays()">
+                    click me!
+                </button>
+            </div>
+            <p class="ex">Example:</p>
+            <code class="example">
+                <span class="comment">//Click to try each array</span><br>
+                <span>alwaysHungry</span>([3.14, "food", "pie", true, "food"]);<br>
+                <span>alwaysHungry</span>([4, 1, 5, 7, 2]);
+            </code>
+            <p class="output">Output:</p>
+            <div class="result"></div>
+        </li>
+        <li id="b"><h3>High Pass Filter</h3>
+            <p>Given an array and a value <strong>cutoff</strong>, return a new array containing only the values larger than <strong>cutoff</strong>.</p>
+            <div class="exe">
+                <button id="second" onclick="highPass([6, 8, 3, 10, -2, 5, 9], 5)">
+                    click me!
+                </button>
+            </div>
+            <p class="ex">Example:</p>
+            <code class="example">
+                <span class="comment">//Click to try the example array</span><br>
+                var result = <span>highPass</span>([6, 8, 3, 10, -2, 5, 9], 5);<br>
+                console.<span>log</span>(result)<span class="comment">// we expect back [6, 8, 10, 9]</span>;
+            </code>
+            <p class="output">Output:</p>
+            <div class="result"></div>
+        </li>
+        <li id="c"><h3>Better than average</h3>
+            <p>Given an array of numbers return a count of how many of the numbers are larger than the average.</p>
+            <div class="exe">
+                <button id="third" onclick="betterThanAverage([6, 8, 3, 10, -2, 5, 9])">
+                    click me!
+                </button>
+            </div>
+            <p class="ex">Example:</p>
+            <code class="example">
+                <span class="comment">//Click to try the example array</span><br>
+                var result = <span>highPass</span>([6, 8, 3, 10, -2, 5, 9]);<br>
+                console.<span>log</span>(result)<span class="comment">// we expect back 4</span>;
+            </code>
+            <p class="output">Output:</p>
+            <div class="result"></div>
+        </li>
+        <li id="d"><h3>Array Reverse</h3>
+            <p>Write a function that will reverse the values an array and return them.</p>
+            <div class="exe">
+                <button id="fourth" onclick="arrayReverse(['a', 'b', 'c', 'd', 'e'])">
+                    click me!
+                </button>
+            </div>
+            <p class="ex">Example:</p>
+            <code class="example">
+                <span class="comment">//Click to try the example array</span><br>
+                var result = <span>highPass</span>(["a", "b", "c", "d", "e"]);<br>
+                console.<span>log</span>(result)<span class="comment">// we expect back ["e", "d", "c", "b", "a"]]</span>;
+            </code>
+            <p class="output">Output:</p>
+            <div class="result"></div>
+        </li>
+        <li id="e"><h3>Fibonacci Array</h3>
+            <p>Fibonacci numbers have been studied for years and appear often in nature. Write a function that will return an array of Fibonacci numbers up to a given length <strong>n</strong> 
+                Fibonacci numbers are calculated by adding the last two values in the sequence together. So if the 4th value is <strong>2</strong> and the 5th value is <strong>3</strong> then the next value in the sequence is <strong>5</strong></p>
+            <div class="exe">
+                <button id="fifth" onclick="fibonacciArray(10)">
+                    click me!
+                </button>
+            </div>
+            <p class="ex">Example:</p>
+            <code class="example">
+                <span class="comment">//Click to try the example array</span><br>
+                var result = <span>fibonacciArray</span>(10);<br>
+                console.<span>log</span>(result)<span class="comment">// we expect back [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</span>;
+            </code>
+            <p class="output">Output:</p>
+            <div class="result"></div>
+        </li>
+    </ol>
+</body>
+<script src="script.js"></script>
+</html>
