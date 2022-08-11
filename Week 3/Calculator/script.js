@@ -1,6 +1,8 @@
 const display = document.getElementById("display");
+window.evaluated = false;
 
 function press(num) {
+  resetDisplay();
   const current = display.textContent;
 
   current.length === 1 && parseInt(current) === 0
@@ -17,7 +19,18 @@ function refreshDisplay(num) {
 }
 
 function setOP(operator) {
+  resetDisplay();
+
   let current = display.textContent;
+
+  //if user intends to start expression with a negative number
+  //skip remaining steps and return symbol;
+  if (current === "0" && operator === "-") {
+    refreshDisplay(operator);
+    return;
+  }
+
+  //check to make sure identical operators are not repeated contiguously
   const lastCharacter = current.slice(-1);
   const isOperator = lastCharacter.match(/[-*+\/]/);
 
@@ -27,9 +40,11 @@ function setOP(operator) {
 }
 
 function setDec(dec) {
+  resetDisplay();
+
   const current = display.textContent;
   //check if it already has an operator
-  const hasOperator = current.match(/[-*+\/]/);
+  const hasOperator = hasOperator(current);
   //check if it already has a decimal
   const hasDec = current.match(/[.]/);
 
@@ -67,10 +82,25 @@ function consultThoth(formula) {
 
 function calculate() {
   const expression = display.textContent;
-  const result = eval(expression);
+  let result = eval(expression);
+
+  //convert to exponential equation if larger than display
+  result = result.toString().length > 11 ? expo(result, 2) : result;
+
+  window.evaluated = true;
 
   refreshDisplay(result);
 }
 
-//TODO: set state once an expression has been executed (run clear)
-//TODO: expand the display if the numbers exceed width
+function expo(x, f) {
+  return Number.parseFloat(x).toExponential(f);
+}
+
+//reset display if previous action was calculate()
+function resetDisplay() {
+  window.evaluated ? (refreshDisplay(0), (window.evaluated = false)) : null;
+}
+
+function hasOperator(expression) {
+  return expression.match(/[-*+\/]/);
+}
