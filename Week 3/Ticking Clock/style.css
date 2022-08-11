@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'LiquidCrystal-Bold';
+    src:  url('/assets/LiquidCrystal-Bold.woff') format('woff');
+  }
+
+.cover-container {
+    max-width: 30em;
+}
+
+h1{
+    color: aliceblue;
+}
+
+#display{
+    background-color: aliceblue;
+    color: #333;
+    font-family: LiquidCrystal-Bold, sans-serif;
+    font-size: 4em;
+    max-width: 95%;
+    margin: 0 auto .5rem;
+    text-align: right;
+}
+
+#calculator button{
+    min-height: 2.5em;
+    font-size: 2em;
+}
