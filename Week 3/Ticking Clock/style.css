@@ -3,25 +3,49 @@
     src:  url('/assets/LiquidCrystal-Bold.woff') format('woff');
   }
 
-.cover-container {
-    max-width: 30em;
+#face {
+    background-color: #f3f3f3;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 6px solid black;
+    position: relative;
+    margin: 0 auto;
+    transform: rotate(180deg);
 }
 
-h1{
-    color: aliceblue;
+#minutes,
+#hours,
+#seconds {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: top center;
 }
 
-#display{
-    background-color: aliceblue;
-    color: #333;
+#seconds {
+    background-color: red;
+    height: 130px;
+    width: 2px;
+}
+
+#hours {
+    background-color: black;
+    height: 100px;
+    width: 8px;
+}
+
+#minutes {
+    background-color: grey;
+    height: 120px;
+    width: 4px;
+}
+
+.container{
+    margin-top: 25px;
+}
+
+#digital{
     font-family: LiquidCrystal-Bold, sans-serif;
-    font-size: 4em;
-    max-width: 95%;
-    margin: 0 auto .5rem;
-    text-align: right;
-}
-
-#calculator button{
-    min-height: 2.5em;
-    font-size: 2em;
+    font-size: 3em;
 }

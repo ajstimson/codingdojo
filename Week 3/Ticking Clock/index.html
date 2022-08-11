@@ -11,81 +11,32 @@
             crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="./style.css">
 
-        <title>Calculator</title>
+        <title>Ticking Clock</title>
     </head>
     <body class="d-flex h-100 text-center text-white bg-dark">
         <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-            <section id="calculator" class="py-5 text-center container">
+            <section id="clock" class="py-5 text-center container">
                 <div class="row py-lg-5">
                     <div class="col-lg-6 col-md-8 mx-auto">
-                        <h1 class="fw-light">Calculator</h1>
-                        <p class="lead text-muted">Uses Bootstrap 5.0</p>
+                        <h1 class="fw-light">Ticking Clock</h1>
                     </div>
                 </div>
                 <div class="container">
                     <div class="row">
-                        <div id="display">0</div>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(7);">7</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(8);">8</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(9);">9</button>
-                        <button class="col bg-info text-light m-2 operator"
-                            onclick="setOP('/');">÷</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(4);">4</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(5);">5</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(6);">6</button>
-                        <button class="col bg-info text-light m-2 operator"
-                            onclick="setOP('*');">×</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(1);">1</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(2);">2</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(3);">3</button>
-                        <button class="col bg-info text-light m-2 operator"
-                            onclick="setOP('-');">−</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="clr();">C</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="press(0);">0</button>
-                        <button class="col bg-secondary text-light m-2"
-                            onclick="setDec('.');">.</button>
-                        <button class="col bg-info text-light m-2 operator"
-                            onclick="setOP('+');">+</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row">
-                        <button id="equals" class="col bg-info text-light m-2"
-                            onclick="calculate()">=</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="row py-lg-5">
-                        <div class="col-lg-6 col-md-8 mx-auto">
-                            <p class="lead text-danger">Known issue:<br> can't subtract negative numbers</p>
+                        <div id="face">
+                            <div id="minutes"></div>
+                            <div id="hours"></div>
+                            <div id="seconds"></div>
                         </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <p id="digital">
+                            <span id="digi-hours"></span>: 
+                            <span id="digi-minutes"></span>: 
+                            <span id="digi-seconds"></span>
+                        </p>
                     </div>
                 </div>
             </section>
