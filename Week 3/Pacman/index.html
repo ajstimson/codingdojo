@@ -10,69 +10,19 @@
     </head>
     <body>
         <main>
-            <h1>Pacman Demo</h1>
-            <div id="pacman">
-                <div class="row">
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
+            <div class="header">
+                <h1>PA12MAN</h1><div id="lives">111</div>
+            </div>
+            <div class="wrap">
+                <div id="gameboard"> 
                 </div>
-                <div class="row">
-                    <div class="brick"></div>
-                    <div class="empty"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="brick"></div>
+            </div>
+            <div id="console">
+                <div class="start">
+                    <div>START!</div><button class="push--flat" onclick="generateMap()"></button>
                 </div>
-                <div class="row">
-                    <div class="brick"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="pacman"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="brick"></div>
-                </div>
-                <div class="row">
-                    <div class="brick"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="coin"></div>
-                    <div class="brick"></div>
-                </div>
-                <div class="row">
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                    <div class="brick"></div>
-                </div>
-                <div id="score">SCORE: <span>0</span></div>
+                <div id="score"><span class="description">SCORE:</span> <span>0</span></div>
+                
             </div>
         </main>
         <script src="script.js"></script>

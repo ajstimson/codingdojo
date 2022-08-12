@@ -2,13 +2,56 @@
     font-family: 'LiquidCrystal-Bold';
     src:  url('/assets/LiquidCrystal-Bold.woff') format('woff');
 }
+
+@font-face {
+    font-family: 'Pac-font';
+    src:  url('/assets/PAC-FONT.woff') format('woff');
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body{
     background-color: black;
+    padding: 25px;
+}
+
+.header{
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 0;
+}
+h1, #lives{
+    font-family: Pac-font, sans-serif;
+}
+
+h1{
+    color: yellow;
+}
+
+
+#lives {
+    background-color: yellow;
+    color: #da2e0b;
+    font-size: 2em;
+}
+
+.wrap{
+    border: 3px solid #fff;
+}
+
+div.row{
+    width: 100%;
+    height: 20px;
 }
 div.row div{
     width: 20px;
     height: 20px;
-    border: 1px solid black;
     display: inline-block;
 }
 
@@ -23,15 +66,87 @@ div.coin{
     background-size: 20px 20px;
 }
 
-div.pacman{
+#pacman{
     background-image: url(/assets/pacman.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
 }
 
-#score{
+#console{
+    display: flex;
+    width: 100%;
+    margin-top: 25px;
+}
+
+#console>div{
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.start{
+    position:relative
+}
+
+.start div{
+    font-family: monospace;
+    color: #fff;
+    position: absolute;
+    top: calc(125px*.5);
+    left: calc(95px*.5);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* CSS Arcade Button by Thierry Michel  
+* https://codepen.io/thierrymichel/pen/Pwzbmd
+*/
+.push--flat {
+    position: relative;
+    display: inline-block;
+    width: 140px;
+    height: 140px;
+    border: 0;
+    outline: none;
+    background-color: #c2290a;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: box-shadow 200ms;
+    box-shadow: inset 0 7.5px 0 #da2e0b, inset 0 -7.5px 0 #aa2409, inset 0 0 0 7.5px #b32609, inset 0 0 0 20px #c2290a, inset 0 0 0 24px #611405, inset 0 0 0 26.0869565217px black, inset 0 0 0 32px rgba(247, 133, 110, 0.7), inset 0 0 0 43.6363636364px #c2290a, inset 0 96px 32px #aa2409, inset 0 0 24px 40px #911f08, 0 12px 0 rgba(0, 0, 0, 0.3);
+  }
+  .push--flat:after {
+    content: "";
+    position: absolute;
+    bottom: 12px;
+    left: 24px;
+    display: block;
+    width: 92px;
+    height: 92px;
+    border: 16px solid rgba(0, 0, 0, 0.3);
+    border-width: 0 0 16px;
+    border-radius: 50%;
+    transition-duration: 200ms;
+  }
+  .push--flat:active, .push--flat.is-pushed {
+    box-shadow: inset 0 7.5px 0 #da2e0b, inset 0 -7.5px 0 #aa2409, inset 0 0 0 7.5px #b32609, inset 0 0 0 20px #c2290a, inset 0 0 0 24px #611405, inset 0 0 0 28.2352941176px black, inset 0 0 0 32px rgba(247, 133, 110, 0.2), inset 0 0 0 43.6363636364px #b32609, inset 0 96px 32px #9b2108, inset 0 0 24px 40px #791a06, 0 12px 0 rgba(0, 0, 0, 0.3);
+    background-color: #b8270a;
+  }
+  .push--flat:active:after, .push--flat.is-pushed:after {
+    bottom: 28px;
+    border-width: 0;
+  }
+
+
+#score span{
     font-family: LiquidCrystal-Bold, sans-serif;
     font-size: 2em;
-    color: #fff
+}
+
+#score span:not(.description){
+    color: #fff;
+}
+
+#score .description{
+    color: yellow;
 }
