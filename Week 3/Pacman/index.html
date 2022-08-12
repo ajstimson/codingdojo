@@ -14,15 +14,24 @@
                 <h1>PA12MAN</h1><div id="lives">111</div>
             </div>
             <div class="wrap">
-                <div id="gameboard"> 
+                <div class="screen">
+                    <div id="gameboard"> 
+                    </div>
                 </div>
-            </div>
-            <div id="console">
-                <div class="start">
-                    <div>START!</div><button class="push--flat" onclick="generateMap()"></button>
+                <div id="console">
+                    <div class="start">
+                        <div class="button-wrap">
+                            <div>MEDIUM</div>
+                            <button class="push-button yellow" onclick="generateMap('medium')"></button>
+                        </div>
+                        <div class="button-wrap">
+                            <div>HARD!</div>
+                            <button class="push-button red" onclick="generateMap('hard')"></button>
+                        </div>
+                    </div>
+                    <div id="score"><span class="description">SCORE:</span> <span>0</span></div>
+                    
                 </div>
-                <div id="score"><span class="description">SCORE:</span> <span>0</span></div>
-                
             </div>
         </main>
         <script src="script.js"></script>

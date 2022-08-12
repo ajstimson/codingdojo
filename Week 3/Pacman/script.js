@@ -7,14 +7,14 @@ function gameBoardSize() {
   const width = window.innerWidth * 0.33;
   const gameWidth = Math.round(width / 20) * 20;
 
-  document.querySelector("main").style.width = gameWidth + 7 + "px";
-  document.querySelector(".wrap").style.height = gameWidth + 7 + "px";
+  document.querySelector(".screen").style.width = gameWidth + 7 + "px";
+  document.querySelector(".screen").style.height = gameWidth + 7 + "px";
   gameBoard.style.width = gameWidth + "px";
   gameBoard.style.height = gameWidth + "px";
 }
 
 //* Generate Map
-function generateMap() {
+function generateMap(difficulty) {
   world = [];
   // Get container dimensions and divide by 20 (round down)
   const width = Math.floor(gameBoard.offsetWidth / 20);
@@ -55,68 +55,94 @@ function setBoundaries(world) {
 }
 
 function setWalls(world) {
-  setWallSeeds(world);
-  checkForOrphans(world);
+  setRandomWalls(world);
 }
 
-function setWallSeeds(world) {
+function setRandomWalls(world) {
   // Wall seeds should never touch the edges so start incrementing on the third layer
   const limit = world.length - 2;
   for (let i = 2; i < limit; i++) {
-    world[i] = world[i].map((row, j) => {
+    world[i] = world[i].map((row, loop) => {
       //Set a 25% chance of generating a wall seed
       const wallSeed = Math.random() > 0.2 ? true : false;
 
       //skip first and last values in array
       return (row =
-        j < 1 || j + 1 === world[i].length
+        loop < 1 || loop + 1 === world[i].length
           ? 2
           : (row =
-              j === 1 || j + 2 === world[i].length
+              loop === 1 || loop + 2 === world[i].length
                 ? 1
                 : wallSeed === false
                 ? 2
                 : 1));
     });
   }
+  checkForOrphans();
 }
 
-function checkForOrphans(world) {
+function checkForOrphans() {
   for (let i = 0; i < world.length; i++) {
     const row = world[i];
-    //Find a 1 with 2 on either side
-    possibleOrphans = orphanFinder(row, i);
+    //Find a coin(1) with bricks(2) on either side
+    orphanFinder(row, i);
   }
 }
 
-function orphanFinder(arr, row) {
-  for (let i = 0; i < arr.length; i++) {
+function orphanFinder(row, rowIndex) {
+  for (let itemIndex = 0; itemIndex < row.length; itemIndex++) {
     //skip first and last two rows for analysis
     //skip first two and last two items in row
-    if (row > 1 && row < arr.length - 2 && i > 1 && i < arr.length - 2) {
-      //check if values are odd or even
-      let position = {};
-      const item = arr[i];
-      position.above = world[row - 1][i];
-      position.below = world[row + 1][i];
-      position.left = arr[i - 1];
-      position.right = arr[i + 1];
-
-      const values = Object.values(position);
-
-      const sum = values.reduce((acc, value) => {
-        return acc + value;
-      }, 0);
-
+    if (
+      rowIndex > 1 &&
+      rowIndex < row.length - 2 &&
+      itemIndex > 1 &&
+      itemIndex < row.length - 2
+    ) {
+      //run position finder to update position object
+      positionDetails(row, rowIndex, itemIndex);
       //if the sum of all the positions is 8, the coin is surrounded
-      sum === 8 ? removeOrphan(row, i) : null;
+      position.sum > 8 ? (world[rowIndex][itemIndex] = 2) : null;
     }
   }
 }
 
-function removeOrphan(row, index) {
-  //replace orphan with a brick
-  world[row][index] = 2;
+function buildLongwalls() {
+  for (let rowIndex = 0; rowIndex < world.length; rowIndex++) {
+    const row = world[rowIndex];
+    for (let itemIndex = 0; itemIndex < row.length; itemIndex++) {
+      if (
+        rowIndex > 1 &&
+        rowIndex < row.length - 2 &&
+        itemIndex > 1 &&
+        itemIndex < row.length - 2
+      ) {
+        positionDetails(row, rowIndex, itemIndex);
+        position.focus === 2 && position.sum > 4
+          ? console.table("row:", rowIndex, "item:", itemIndex, position)
+          : null;
+      }
+    }
+  }
+}
+
+let position = {};
+function positionDetails(row, rowIndex, itemIndex) {
+  //clear position
+  position = {};
+  console.log();
+  position.above = world[rowIndex - 1][itemIndex];
+  position.below = world[rowIndex + 1][itemIndex];
+  position.left = row[itemIndex - 1];
+  position.right = row[itemIndex + 1];
+  position.focus = row[itemIndex];
+
+  //convert object to array and find sum of values
+  position.sum = Object.values(position).reduce((acc, value) => {
+    return acc + value;
+  }, 0);
+
+  return position;
 }
 
 function mapHTML(world) {
@@ -125,7 +151,7 @@ function mapHTML(world) {
     HTML += '<div class="row">';
     world[i].map((row) => {
       row === 2
-        ? (HTML += '<div class="brick"></div>')
+        ? (HTML += '<div class="brick">' + i + "</div>")
         : row === 1
         ? (HTML += '<div class="coin"></div>')
         : (HTML += '<div class="empty"></div>');
