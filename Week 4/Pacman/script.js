@@ -3,13 +3,12 @@ let world = [];
 let pacman = {};
 let gamePlay = true;
 let difficulty = "easy";
+let winningScore = 0;
 gameBoardSize();
 
 function gameBoardSize() {
-  //const width = 200;
-  const width = window.innerWidth * 0.33;
+  const width = window.innerWidth * 0.29;
   const gameWidth = Math.round(width / 20) * 20;
-
   document.querySelector(".screen").style.width = gameWidth + 7 + "px";
   document.querySelector(".screen").style.height = gameWidth + 7 + "px";
   gameBoard.style.width = gameWidth + "px";
@@ -57,6 +56,9 @@ function generateMap(level) {
   // * Place Pacman
   placePacman();
 
+  // * Set Winning Score
+  setWinningScore();
+
   // * Place Ghosts
   placeGhosts(level);
 
@@ -67,14 +69,7 @@ function generateMap(level) {
   mapHTML(world);
 
   // * Release the Ghosts!
-  // counting intervals so we can stop it from testing
-  let runGhosts = setInterval(function () {
-    if (gamePlay === false) {
-      clearInterval(runGhosts);
-    } else {
-      moveGhosts();
-    }
-  }, 150);
+  runGhosts();
 }
 
 function setBoundaries(world) {
@@ -142,7 +137,7 @@ function orphanFinder(row, y) {
 
 function setMediumWalls() {
   setLongWalls();
-  addRandoBlocks();
+  moreRandomBlocks();
   checkForOrphans();
 }
 
@@ -183,7 +178,7 @@ function addBricks(arr) {
   return arr;
 }
 
-function addRandoBlocks() {
+function moreRandomBlocks() {
   for (let y = 0; y < world.length; y++) {
     const row = world[y];
     if (y > 1 && y < world.length - 1) {
@@ -245,6 +240,20 @@ function placePacman() {
 
   pacman.y = location.y;
   pacman.x = location.x;
+}
+
+function setWinningScore() {
+  // * flatten world array
+  let arr = world.flat();
+
+  // * convert array values to score values
+  arr = arr.map((y) => (y === 1 ? 20 : y === 5 ? 50 : 0));
+
+  // * return sum of all score values
+  winningScore = arr.reduce(
+    (sum, num) => sum + (Array.isArray(num) ? sumArray(num) : num * 1),
+    0
+  );
 }
 
 function placeGhosts(difficulty) {
@@ -378,7 +387,11 @@ function mapHTML(world) {
             '" class="coin"></div>')
         : row === 3
         ? (HTML +=
-            '<div id="pacman" data-y="' + i + '" data-x="' + x + '"></div>')
+            '<div id="pacman" data-pacman="right" data-y="' +
+            i +
+            '" data-x="' +
+            x +
+            '"></div>')
         : row === 4
         ? (HTML +=
             '<div data-score=false data-y="' +
@@ -408,8 +421,17 @@ function mapHTML(world) {
   gameBoard.innerHTML = HTML;
 }
 
-let counter = 0;
-
+function runGhosts() {
+  const interval =
+    difficulty === "easy" ? 500 : difficulty === "medium" ? 250 : 150;
+  let run = setInterval(function () {
+    if (gamePlay === false) {
+      clearInterval(run);
+    } else {
+      moveGhosts();
+    }
+  }, interval);
+}
 document.onkeydown = checkKey;
 
 const keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
@@ -480,36 +502,37 @@ function movePacman(direction) {
   const position = positionDetails(world[pacman.y], pacman.y, pacman.x);
 
   direction === "up" && position.up.val !== 2
-    ? redrawPacman(pacEl, position.up)
+    ? redrawPacman(pacEl, position.up, direction)
     : direction === "down" && position.down.val !== 2
-    ? redrawPacman(pacEl, position.down)
+    ? redrawPacman(pacEl, position.down, direction)
     : direction === "left" && position.left.val !== 2
-    ? redrawPacman(pacEl, position.left)
+    ? redrawPacman(pacEl, position.left, direction)
     : direction === "right" && position.right.val !== 2
-    ? redrawPacman(pacEl, position.right)
+    ? redrawPacman(pacEl, position.right, direction)
     : null;
 }
 
-function redrawPacman(el, direction) {
-  direction.character = 3;
+function redrawPacman(el, position, direction) {
   //Update world map array
-  const squareValue = movePacManThroughTheWorld(direction);
+  const squareValue = pacmanWorldArray(position);
 
   //Update pacman object
-  pacman.x = direction.x;
-  pacman.y = direction.y;
+  pacman.x = position.x;
+  pacman.y = position.y;
 
   //Update old pacman HTML element
   el.removeAttribute("id");
   el.classList.add("empty");
+  delete el.dataset.pacman;
 
   //Select new pacman HTML element
   const newPosition = document.querySelector(
-    '[data-y="' + direction.y + '"][data-x="' + direction.x + '"]'
+    '[data-y="' + position.y + '"][data-x="' + position.x + '"]'
   );
 
   //Update new pacman HTML element
   newPosition.setAttribute("id", "pacman");
+  newPosition.dataset.pacman = direction;
 
   //If new position is a coin...
   /*
@@ -544,12 +567,19 @@ function updateScore(score) {
   const newScore = currentScore + score;
 
   el.innerHTML = newScore;
+
+  newScore === winningScore ? stopGame(1) : null;
 }
 
-function movePacManThroughTheWorld(direction) {
+function pacmanWorldArray(direction) {
+  // if new position is not a ghost, move pacman's value 3 to new position
+  // otherwise 6 = dead pacman
   world[direction.y][direction.x] !== 4
-    ? (world[direction.y][direction.x] = 0)
+    ? (world[direction.y][direction.x] = 3)
     : (world[direction.y][direction.x] = 6);
+
+  //old position should now be empty
+  world[pacman.y][pacman.x] = 0;
 
   return world[direction.y][direction.x];
 }
@@ -563,20 +593,23 @@ function moveGhosts() {
 }
 
 function setCourse(ghost) {
-  const ghostY = parseInt(ghost.dataset.y);
-  const ghostX = parseInt(ghost.dataset.x);
+  const y = parseInt(ghost.dataset.y);
+  const x = parseInt(ghost.dataset.x);
 
   //Get values from adjacent squares
-  const position = positionDetails(world[ghostY], ghostY, ghostX);
+  const position = positionDetails(world[y], y, x);
   //Set possible move array
   let possibleMoves = [];
   //remove possible moves that are not available due to bricks
 
-  const dude = Object.entries(position);
+  const obj = Object.entries(position);
   for (let i = 0; i < 4; i++) {
-    const direction = dude[i][0];
-    const squareValue = dude[i][1].val;
-    squareValue !== 2 ? possibleMoves.push(direction) : null;
+    const direction = obj[i][0];
+    const squareValue = obj[i][1].val;
+    //remove possible moves where a brick or ghost are present
+    squareValue !== 2 && squareValue !== 4
+      ? possibleMoves.push(direction)
+      : null;
   }
 
   //Select move direction at random
@@ -604,13 +637,17 @@ function redrawGhost(oldGhost, newGhost) {
   oldGhost.classList.remove("ghost");
 
   //Apply class to old position since the ghost does not "consume" anything
-  oldGhost.dataset.reserve && oldGhost.dataset.reserve === 1
-    ? oldGhost.classList.add("coin")
-    : oldGhost.classList.reserve === 4
-    ? oldGhost.classList.add("ghost")
-    : oldGhost.classList.reserve === 5
-    ? oldGhost.classList.add("cherries")
-    : oldGhost.classList.add("coin");
+  if (oldGhost.dataset.reserve === undefined) {
+    oldGhost.classList.add("coin");
+  } else {
+    oldGhost.dataset.reserve === "0"
+      ? oldGhost.classList.add("empty")
+      : oldGhost.dataset.reserve === "1"
+      ? oldGhost.classList.add("coin")
+      : oldGhost.dataset.reserve === "5"
+      ? oldGhost.classList.add("cherries")
+      : null;
+  }
 
   //remove ghost and reserve data attributes
   delete oldGhost.dataset.ghost;
@@ -645,8 +682,6 @@ function ghostWorldArray(oldSQ, newSQ) {
     ? (world[newSQ.y][newSQ.x] = 4)
     : (world[newSQ.y][newSQ.x] = 6);
 
-  console.table(world);
-
   return world[newSQ.y][newSQ.x];
 }
 
@@ -672,20 +707,21 @@ function pacmanDead() {
   pacEl.classList.add("dead");
   gameBoard.classList.add("pacman-dead");
 
-  removeLife();
+  removeLife(pacEl);
 }
 
-function removeLife() {
+function removeLife(el) {
   const lifeMeter = document.getElementById("lives");
   const lifeValue = lifeMeter.innerHTML.match(/1/g);
 
   //If there are lives left
   /*
    * Remove a life
-   * Restart the game
+   * Place Pacman
    */
   lifeValue !== null
-    ? ((lifeMeter.innerHTML = lifeMeter.innerHTML.slice(0, -1)), restartGame())
+    ? ((lifeMeter.innerHTML = lifeMeter.innerHTML.slice(0, -1)),
+      restartGame(el))
     : // If lives are 0
       /*
        * Run game over animation
@@ -693,10 +729,16 @@ function removeLife() {
       gameOver(lifeMeter);
 }
 
-function restartGame() {
-  //wait 5 seconds and generate a new map
+function restartGame(el) {
   setTimeout(() => {
-    generateMap(difficulty);
+    removePacman();
+  }, 800);
+  setTimeout(() => {
+    gameBoard.classList.remove("pacman-dead");
+    el.removeAttribute("id");
+    //TODO: create new function to redraw pacman
+    runGhosts();
+    gamePlay = true;
   }, 1500);
 }
 
@@ -717,6 +759,19 @@ function gameOver(lives) {
   }, 1500);
 }
 
+function pacWon() {
+  gameBoard.classList.add("game-over");
+
+  clearBoard();
+  announceWin();
+
+  setTimeout(() => {
+    //Add to life meter
+    lives.innerHTML += "1";
+    generateMap(difficulty);
+  }, 1500);
+}
+
 function clearBoard() {
   const board = document.querySelectorAll("#gameboard>.row>div");
   for (let square = 0; square < board.length; square++) {
@@ -732,18 +787,19 @@ function clearBoard() {
   }
 }
 
+function announceWin() {
+  let el = document.createElement("div");
+  el.classList.add("announcement");
+  el.innerHTML = "<h2>You Won!</h2>";
+  gameBoard.prepend(el);
+}
+
 function announceGameOver() {
   let el = document.createElement("div");
   el.classList.add("announcement");
   el.innerHTML = "<h2>GAME OVER</h2>";
   gameBoard.prepend(el);
 }
-
-//TODO: Set random movement
-/*
-        IDEAS:
-        * Map which directions are 1 or 0 and allow random selection of available options
-    */
 
 //TODO: Create High Score records
 //TODO: Create button to add a different pacman
