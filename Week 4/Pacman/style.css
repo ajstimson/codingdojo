@@ -62,6 +62,43 @@ h1 {
     margin-right: 25px;
 }
 
+#gameboard.game-over{
+    position: relative;
+}
+
+#gameboard.game-over .announcement{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 9;
+}
+
+.announcement h2{
+    color: #fff;
+    font-family: LiquidCrystal-Bold, sans-serif;
+    font-size: 3.5em;
+    text-align: center;
+    animation-name:  fade-in;
+    animation-duration: 750ms;
+    animation-iteration-count: once;
+    animation-timing-function: ease-in-out; 
+}
+
+@-webkit-keyframes fade-in {
+    0% {
+        transform: scale(300%);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(100%);
+        opacity: 1;
+    }
+}
+
+
 div.row {
     width: 100%;
     height: 20px;
@@ -76,6 +113,28 @@ div.row div {
 div.brick {
     background-color: blue;
 }
+
+#gameboard.game-over div.brick,
+#gameboard.pacman-dead div.brick{
+    animation-name: flash;
+    animation-duration: 500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+@-webkit-keyframes flash {
+    0% {
+        background-color: blue;
+        opacity:1;
+    }
+    50% {
+        background-color: rgb(204, 0, 255);
+    }
+    100% {
+        background-color: rgb(255, 0, 0);
+    }
+}
+
 
 div.coin {
     position: relative;
@@ -94,6 +153,48 @@ div.coin::after {
 
 #pacman {
     background-image: url(/assets/pacman.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+}
+
+#pacman.dead{
+    animation-name: spin;
+    animation-duration: 1500ms;
+    animation-iteration-count: once;
+    animation-timing-function: linear; 
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg)scale(1.1);
+    }
+    to {
+        transform:rotate(-720deg)scale(0);
+    }
+}
+
+.ghost {
+    background-image: url(/assets/ghost-1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
+}
+
+.ghost[data-ghost="2"]{
+    filter: hue-rotate(160deg);
+}
+
+.ghost[data-ghost="3"]{
+    filter: hue-rotate(290deg);
+}
+
+.ghost[data-ghost="4"]{
+    filter: hue-rotate(245deg);
+}
+
+.cherries{
+    background-image: url(/assets/cherry.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
@@ -191,13 +292,13 @@ div.coin::after {
 }
 .push-button.green {
     background-color: #4ac20a;
-    box-shadow: inset 0 7.5px 0 #da2e0b, inset 0 -7.5px 0 #aa2409, inset 0 0 0 7.5px #b32609, inset 0 0 0 20px #c2290a, inset 0 0 0 24px #611405, inset 0 0 0 26.0869565217px black, inset 0 0 0 32px rgba(247, 133, 110, 0.7), inset 0 0 0 43.6363636364px #c2290a, inset 0 96px 32px #aa2409, inset 0 0 24px 40px #911f08, 0 12px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 7.5px 0 #1cda0b, inset 0 -7.5px 0 #4faa09, inset 0 0 0 7.5px #1db309, inset 0 0 0 20px #19c20a, inset 0 0 0 24px #176105, inset 0 0 0 26.0869565217px black, inset 0 0 0 32px rgba(137, 247, 110, 0.7), inset 0 0 0 43.6363636364px #13c20a, inset 0 96px 32px #21aa09, inset 0 0 24px 40px #0f9108, 0 12px 0 rgba(0, 0, 0, 0.3);
 }
 
 .push-button.green:active,
 .push-button.green.is-pushed {
-    background-color: #c2290a;
-    box-shadow: inset 0 7.5px 0 #da2e0b, inset 0 -7.5px 0 #aa2409, inset 0 0 0 7.5px #b32609, inset 0 0 0 20px #c2290a, inset 0 0 0 24px #611405, inset 0 0 0 26.0869565217px black, inset 0 0 0 32px rgba(247, 133, 110, 0.7), inset 0 0 0 43.6363636364px #c2290a, inset 0 96px 32px #aa2409, inset 0 0 24px 40px #911f08, 0 12px 0 rgba(0, 0, 0, 0.3);
+    background-color: #4ac20a;
+    box-shadow: inset 0 7.5px 0 #1cda0b, inset 0 -7.5px 0 #4faa09, inset 0 0 0 7.5px #1db309, inset 0 0 0 20px #19c20a, inset 0 0 0 24px #176105, inset 0 0 0 26.0869565217px black, inset 0 0 0 32px rgba(137, 247, 110, 0.7), inset 0 0 0 43.6363636364px #13c20a, inset 0 96px 32px #21aa09, inset 0 0 24px 40px #0f9108, 0 12px 0 rgba(0, 0, 0, 0.3);
 }
 
 #score span {
