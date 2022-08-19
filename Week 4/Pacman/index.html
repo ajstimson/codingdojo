@@ -7,19 +7,26 @@
         <link rel="stylesheet" type="text/css" href="./style.css">
 
         <title>Pacman Demo</title>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
     </head>
     <body>
         <main>
             <div class="header">
-                <h1>PA12MAN</h1><div id="lives">111</div><div id="score"><span class="description">SCORE:</span> <span>0</span></div>
+                <h1>PA12MAN</h1>
             </div>
-            <div class="wrap">
-                <div class="screen">
-                    <div id="gameboard"> 
+            <div class="wrap row">
+                <div id="control-panel">
+                    <div class="row">
+                        <h2 class="description">Players</h2>
+                        <div class="button-wrap single">
+                            <button class="push-button white" onclick="onePac()"></button>
+                        </div>
+                        <div class="button-wrap double">
+                            <button class="push-button white" onclick="twoPacs()"></button>
+                        </div>
                     </div>
-                </div>
-                <div id="console">
-                    <div class="start">
+                    <div class="start row">
+                        <h2 class="description">Difficulty</h2>
                         <div class="button-wrap">
                             <div>EASY</div>
                             <button class="push-button green" onclick="generateMap('easy')"></button>
@@ -32,6 +39,28 @@
                             <div>HARD!</div>
                             <button class="push-button red" onclick="generateMap('hard')"></button>
                         </div>
+                        <div class="button-wrap">
+                            <div>RESET</div>
+                            <button class="push-button blue" onclick="location.reload()"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="screen">
+                    <div id="gameboard"> 
+                    </div>
+                </div>
+                <div id="console" class="col">
+                    <div class="lives row">
+                        <div class="description">Player 1:</div><div id="lives">111</div>
+                    </div>
+                    <div id="score" class="row">
+                        <span class="description">SCORE:</span> <span>0</span>
+                    </div>
+                    <div id="high-scores" class="col">
+                        <h2 class="description">HIGH SCORES:</h2>
+                        <ul>
+                            <li></li>
+                        </ul>
                     </div>
                 </div>
             </div>
