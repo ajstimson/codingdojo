@@ -16,7 +16,7 @@
             </div>
             <div class="wrap row">
                 <div id="control-panel">
-                    <div class="row">
+                    <div class="row players">
                         <h2 class="description">Players</h2>
                         <div class="button-wrap single">
                             <button class="push-button white" onclick="onePac()"></button>
@@ -29,15 +29,15 @@
                         <h2 class="description">Difficulty</h2>
                         <div class="button-wrap">
                             <div>EASY</div>
-                            <button class="push-button green" onclick="generateMap('easy')"></button>
+                            <button class="push-button green" onclick="gameInit('easy')"></button>
                         </div>
                         <div class="button-wrap">
                             <div>MEDIUM</div>
-                            <button class="push-button yellow" onclick="generateMap('medium')"></button>
+                            <button class="push-button yellow" onclick="gameInit('medium')"></button>
                         </div>
                         <div class="button-wrap">
                             <div>HARD!</div>
-                            <button class="push-button red" onclick="generateMap('hard')"></button>
+                            <button class="push-button red" onclick="gameInit('hard')"></button>
                         </div>
                         <div class="button-wrap">
                             <div>RESET</div>
@@ -48,10 +48,17 @@
                 <div class="screen">
                     <div id="gameboard"> 
                     </div>
+                    <div id="pac-land"> 
+                    </div>
+                    <div id="ghost-world"> 
+                    </div>
                 </div>
                 <div id="console" class="col">
                     <div class="lives row">
                         <div class="description">Player 1:</div><div id="lives">111</div>
+                        <div class="row player-2">
+                            <div class="description">Player 2:</div>
+                        </div>
                     </div>
                     <div id="score" class="row">
                         <span class="description">SCORE:</span> <span>0</span>
@@ -59,12 +66,15 @@
                     <div id="high-scores" class="col">
                         <h2 class="description">HIGH SCORES:</h2>
                         <ul>
-                            <li></li>
+                            <li>9999</li>
+                            <li>5781</li>
+                            <li>1234</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </main>
-        <script src="script.js"></script>
+        <!-- <script src="script.js"></script> -->
+        <script src="script2.js"></script>
     </body>
 </html>
