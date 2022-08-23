@@ -1,35 +1,53 @@
 const gameBoard = document.getElementById("gameboard");
+const pacLand = document.getElementById("pac-land");
+const ghostWorld = document.getElementById("ghost-world");
+
+//Gameboard layers
 let world = [];
+let pacmen = [];
+let ghosts = [];
+
+//Game characteristics
+let level = "easy";
 let players = 1;
-let pacman = {};
-let twopac = {};
+
+//GameAgent global scope variables
 let gamePlay = false;
-let difficulty = "easy";
-let numGhosts = difficulty === "hard" ? 4 : difficulty === "medium" ? 3 : 2;
-let winningScore = 0;
-let mysteryBox = false;
-let playedAudio = 0;
+let score = {
+  current: 0,
+  remaining: 0,
+  winning: 0,
+};
+
 gameBoardSize();
 
 function gameBoardSize() {
+  const screen = document.querySelector(".screen");
+  const layers = screen.querySelectorAll(".screen>div");
   const width = window.innerWidth * 0.29;
   const gameWidth = Math.round(width / 20) * 20;
-  document.querySelector(".screen").style.width = gameWidth + 7 + "px";
-  document.querySelector(".screen").style.height = gameWidth + 7 + "px";
-  gameBoard.style.width = gameWidth + "px";
-  gameBoard.style.height = gameWidth + "px";
+
+  screen.style.width = gameWidth + 7 + "px";
+  screen.style.height = gameWidth + 7 + "px";
+
+  layers.forEach((el) => {
+    el.style.width = gameWidth + "px";
+    el.style.height = gameWidth + "px";
+  });
+}
+
+function gameInit(level) {
+  generateMap(level);
+  generatePacLand();
+  generateGhostWorld(level);
+  setWinningScore();
+  runGhosts();
 }
 
 //* Generate Map
 function generateMap(level) {
-  playedAudio % 2 === 0 ? playAudio("game_start.wav") : null;
-  playedAudio++;
-
   // * enable gameplay
   gamePlay = true;
-
-  // * set difficulty to global scope
-  difficulty = level;
 
   // * clear gameboard classList
   gameBoard.className = "";
@@ -60,27 +78,10 @@ function generateMap(level) {
     : level === "medium"
     ? setMediumWalls()
     : setLongWalls();
-
-  // * Place Pacman
-  placePacman();
-
-  // * Place twoPac
-  players === 2 ? placeTwoPac() : null;
-
-  // * Set Winning Score
-  setWinningScore();
-
-  // * Place Ghosts
-  placeGhosts();
-
-  // * Place Cherries
-  placeCherries(level);
-
+  // * Generate Cherries
+  setCherries();
   // * Generate HTML
-  mapHTML(world);
-
-  // * Release the Ghosts!
-  runGhosts();
+  mapHTML(world, gameBoard);
 }
 
 function setBoundaries(world) {
@@ -243,127 +244,130 @@ function positionDetails(row, y, x) {
   return position;
 }
 
-function placePacman() {
-  const available = possPositions(pacPlace);
-  //Select position randomly
+function setCherries() {
+  // Cherries are all ways in the 4 corners
+  world[1][1] = 5;
+  world[1][world.length - 2] = 5;
+  world[world.length - 2][1] = 5;
+  world[world.length - 2][world.length - 2] = 5;
+}
+
+function mapHTML(layer, target) {
+  let HTML = "";
+  let ghostCount = 1;
+  for (let y = 0; y < layer.length; y++) {
+    HTML += '<div class="row">';
+    layer[y].map((row, x) => {
+      row === 1
+        ? (HTML += HTMLS(20, y, x, "coin"))
+        : row === 2
+        ? (HTML += HTMLS(-1, y, x, "brick"))
+        : row === 3
+        ? (HTML += HTMLS(null, y, x, null, "pacman", "data-pacman", "right"))
+        : row === 4
+        ? ((HTML += HTMLS(null, y, x, "ghost", null, "data-ghost", ghostCount)),
+          ghostCount++)
+        : row === 5
+        ? (HTML += HTMLS(50, y, x, "cherries"))
+        : row === 6
+        ? (HTML += HTMLS(null, y, x, null, "twopac", "data-pacman", "left"))
+        : (HTML += HTMLS(0, y, x));
+    });
+    HTML += "</div>";
+  }
+
+  target.innerHTML = HTML;
+}
+
+function HTMLS(
+  score,
+  y,
+  x,
+  elClass,
+  id = null,
+  dataArg = null,
+  dataVal = null
+) {
+  let div = document.createElement("div");
+  score ? div.setAttribute("data-score", score) : null;
+  div.setAttribute("data-y", y);
+  div.setAttribute("data-x", x);
+  dataArg ? div.setAttribute(dataArg, dataVal) : null;
+  elClass ? div.classList.add(elClass) : null;
+  id ? div.setAttribute("id", id) : null;
+
+  return div.outerHTML;
+}
+
+//Creates layer arrays to "mirror" the world array
+function mirrorArray() {
+  return [...Array(world.length)].flatMap((x) => [
+    (x = [...Array(world.length)].map((x) => (x = 0))),
+  ]);
+}
+
+function generatePacLand() {
+  // * Create array to match shape of world array
+  pacmen = mirrorArray();
+
+  const available = worldTraverse(pacPlace);
   const location = selectLocationRandomly(available);
-  if (location !== undefined) {
-    world[location.y][location.x] = 3;
-    pacman.y = location.y;
-    pacman.x = location.x;
-  } else {
-    //fallback position just in case pacPlace formula yields no results
-    world[1][1] = 3;
-    pacman.y = 1;
-    pacman.x = 1;
-  }
+
+  //place pacman
+  pacmen[location[0]][location[1]] = 3;
+  //remove underlying world value
+  world[location[0]][location[1]] = 0;
+  players === 2 ? createTwopac() : null;
+
+  mapHTML(pacmen, pacLand);
+  //update world HTML
+  mapHTML(world, gameBoard);
 }
 
-function selectLocationRandomly(available) {
-  return available[Math.floor(Math.random() * available.length)];
-}
-
-function placeTwoPac() {
-  const available = possPositions(pacPlace);
-  //Select position randomly
+function createTwopac() {
+  const available = worldTraverse(twoPacPlace);
   const location = selectLocationRandomly(available);
-  if (location !== undefined) {
-    //TwoPac is value 8
-    world[location.y][location.x] = 8;
-    twopac.y = location.y;
-    twopac.x = location.x;
-  } else {
-    //fallback position just in case pacPlace formula yields no results
-    world[1][1] = 3;
-    twopac.y = 1;
-    twopac.x = 1;
-  }
+  //place pacman
+  pacmen[location[0]][location[1]] = 6;
+  //remove underlying world value
+  world[location[0]][location[1]] = 0;
 }
 
-function placeMysteryBox() {
-  const location = possPositions(mysteryPlace)[0];
+function generateGhostWorld(level) {
+  // * Create array to match shape of world array
+  ghosts = mirrorArray();
 
-  if (location !== undefined) {
-    world[location.y][location.x] = 7;
-    mysteryBox = true;
-    drawMysteryBox(location);
-  } else {
-    placeMysteryBox();
-  }
+  const available = worldTraverse(ghostPlace);
+
+  const numGhosts =
+    level === "easy" ? 2 : level === "medium" ? 3 : level === "hard" ? 4 : null;
+
+  const quarters = quadrants();
+
+  // * iterate through quadrant keys (q1,q2 ... )
+  Object.keys(quadrants()).map((key, i) => {
+    // * if iteration is less than number of ghosts, create a ghost
+    i < numGhosts ? setGhostPoint(available, quarters[key]) : null;
+  });
+
+  mapHTML(ghosts, ghostWorld);
 }
 
-function setWinningScore() {
-  // * flatten world array
-  let arr = world.flat();
-
-  // * convert array values to score values
-  arr = arr.map((y) => (y === 1 ? 20 : y === 5 ? 50 : 0));
-
-  // * return sum of all score values
-  winningScore = arr.reduce(
-    (sum, num) => sum + (Array.isArray(num) ? sumArray(num) : num * 1),
-    0
+function setGhostPoint(coordinates, quarter) {
+  let available = [];
+  coordinates.map(([y, x], i) =>
+    y > quarter.yStart &&
+    y < quarter.yEnd &&
+    x > quarter.xStart &&
+    x < quarter.xEnd
+      ? available.push([y, x])
+      : null
   );
 
-  const existingScore = parseInt(
-    document.querySelector("#score>span+span").innerText
-  );
-  winningScore = winningScore + existingScore;
-}
+  const location = selectLocationRandomly(available);
 
-function placeGhosts() {
-  const available = possPositions(ghostPlace);
-  for (let i = 0; i < numGhosts; i++) {
-    //Select position randomly
-    const location = notTooClose(available);
-    //Place ghost
-    world[location.y][location.x] = 4;
-  }
-}
-
-function notTooClose(available) {
-  //Select position randomly
-  let randomIndex = array_rand(available);
-  let location = available[randomIndex];
-  //Set max min y values for consideration
-  const low = pacman.y - 6;
-  const high = pacman.y + 6;
-
-  return location.y > low && location.y < high
-    ? notTooClose(available)
-    : location;
-}
-
-function placeCherries(difficulty) {
-  const numCherries =
-    difficulty === "hard" ? 2 : difficulty === "medium" ? 4 : 6;
-  const available = possPositions(cherryPlace);
-
-  for (let i = 0; i < numCherries; i++) {
-    const randomIndex = array_rand(available);
-    const location = available[randomIndex];
-    world[location.y][location.x] = 5;
-  }
-}
-
-function array_rand(array, num) {
-  const keys = Object.keys(array);
-  if (typeof num === "undefined" || num === null) {
-    num = 1;
-  } else {
-    num = +num;
-  }
-  if (isNaN(num) || num < 1 || num > keys.length) {
-    return null;
-  }
-  // shuffle the array of keys
-  for (let i = keys.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); // 0 ≤ j ≤ i
-    const tmp = keys[j];
-    keys[j] = keys[i];
-    keys[i] = tmp;
-  }
-  return num === 1 ? keys[0] : keys.slice(0, num);
+  //place pacman
+  ghosts[location[0]][location[1]] = 4;
 }
 
 function possPositions(func) {
@@ -384,138 +388,148 @@ function possPositions(func) {
   }
   return results.flat();
 }
-i = 0;
-function pacPlace(row, y, x) {
-  const position = positionDetails(row, y, x);
-  const sum =
-    position.up.val +
-    position.down.val +
-    position.left.val +
-    position.right.val;
-  if (sum === 6 && position.focus.val === 1) {
-    return { y: y, x: x };
-  }
-  return null;
-}
 
-function mysteryPlace(row, y, x) {
-  const position = positionDetails(row, y, x);
-
-  const possibleSpot = [];
-  //place the mystery box near pacman
-  if (position.focus.val === 3) {
-    for (let step = 6; step > 0; step--) {
-      //walk six steps to the left of pacman to find an empty space to place mystery box
-      possibleSpot.left = position.focus.x - step;
-      possibleSpot.leftVal = world[position.focus.y][possibleSpot.left];
-
-      //walk six steps to the right of pacman to find an empty space to place mystery box
-      possibleSpot.right = position.focus.x + step;
-      possibleSpot.rightVal = world[position.focus.y][possibleSpot.right];
-
-      if (possibleSpot.leftVal === 0) {
-        return {
-          y: position.focus.y,
-          x: possibleSpot.left,
-        };
-      }
-      if (possibleSpot.rightVal === 0) {
-        return {
-          y: position.focus.y,
-          x: possibleSpot.right,
-        };
-      }
-    }
-  }
-}
-
-function ghostPlace(row, y, x) {
-  const position = positionDetails(row, y, x);
-  if (position.focus.val === 1) {
-    return { y: y, x: x };
-  }
-
-  return null;
-}
-
-function cherryPlace(row, y, x) {
-  const position = positionDetails(row, y, x);
-  const sum =
-    position.up.val +
-    position.down.val +
-    position.left.val +
-    position.right.val;
-  if (sum > 6 && position.focus.val === 1) {
-    return { y: y, x: x };
-  }
-}
-
-function mapHTML(world) {
-  let HTML = "";
-  let ghostCount = 1;
-  for (let i = 0; i < world.length; i++) {
-    HTML += '<div class="row">';
-    world[i].map((row, x) => {
-      row === 2
-        ? (HTML +=
-            '<div data-score="-1" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" class="brick"></div>')
-        : row === 1
-        ? (HTML +=
-            '<div data-score="20" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" class="coin"></div>')
-        : row === 3
-        ? (HTML +=
-            '<div id="pacman" data-pacman="right" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '"></div>')
-        : row === 4
-        ? (HTML +=
-            '<div data-score=false data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" class="ghost" data-ghost="' +
-            (ghostCount, ghostCount++) +
-            '"></div>')
-        : row === 5
-        ? (HTML +=
-            '<div data-score="50" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" class="cherries"></div>')
-        : row === 8
-        ? (HTML +=
-            '<div id="twopac" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" data-pacman="left"></div>')
-        : (HTML +=
-            '<div data-score="0" data-y="' +
-            i +
-            '" data-x="' +
-            x +
-            '" class="empty"></div>');
+//produces an array of available coordinates
+function worldTraverse(func) {
+  let coordinates = [];
+  world.map(function (row, y) {
+    row.map(function (col, x) {
+      // * y = the row
+      // * x = column positition
+      // * y[x] = the cell value
+      const result = func(y, x, world[y][x]);
+      result
+        ? coordinates.push(result)
+        : //console.error("ERROR! check " + func)
+          null;
     });
-    HTML += "</div>";
-  }
+  });
+  return coordinates;
+}
 
-  gameBoard.innerHTML = HTML;
+function pacPlace(y, x, val) {
+  const center = centerPoint();
+  const range = percentageRange(0.1);
+  const low = range.low - center.y;
+  const high = range.high - center.y;
+  if (y > low && y < high && x > low && x < high && val !== 2) {
+    return [y, x];
+  }
+}
+
+function pacGamePlayPlace(y, x, val) {
+  const center = centerPoint();
+  const range = percentageRange(0.2);
+  const low = range.low - center.y;
+  const high = range.high - center.y;
+  if (y > low && y < high && x > low && x < high && val === 0) {
+    return [y, x];
+  }
+}
+
+function twoPacPlace(y, x, val) {
+  const quad = quadrants();
+  const low = quad.q4.yStart + 2;
+  const high = quad.q4.yEnd - 6;
+  if (y > low && y < high && x > low && x < high && val !== 2) {
+    return [y, x];
+  }
+}
+
+function ghostPlace(y, x, val) {
+  let valid = 0;
+  const quarters = quadrants();
+  const yLow = Math.floor(quarters.q1.yEnd * 0.25),
+    yHigh = Math.floor(quarters.q4.yEnd * 0.75),
+    xLow = Math.floor(quarters.q1.xEnd * 0.25),
+    xHigh = Math.floor(quarters.q4.xEnd * 0.75);
+
+  for (let i = 0; i < 4; i++) {
+    //are coordinates within +/- range of a given quarter center point
+    i === 0
+      ? y < yLow + 3 && x > xLow - 2 && x < xLow + 3
+        ? valid++
+        : valid
+      : //are coordinates within +/-(2) range of q2 center point
+      i === 1
+      ? y < yLow + 3 && x > xHigh - 2 && x < xHigh + 2
+        ? valid++
+        : valid
+      : //are coordinates within +/-(2) range of q3 center point
+      i === 2
+      ? y > yHigh - 1 && y < yHigh + 3 && x < xLow + 3
+        ? valid++
+        : valid
+      : //are coordinates within +/-(2) range of q4 center point
+      i === 3
+      ? y > yHigh - 1 && y < yHigh + 6 && x > xHigh - 1 && x < xHigh + 3
+        ? valid++
+        : valid
+      : //otherwise discard
+        null;
+  }
+  //If the coordinates meet any of the above criteria and are not bricks or twopac, return as valid
+  if (valid > 0 && val !== 2 && val !== 6) {
+    return [y, x];
+  }
+}
+
+function centerPoint() {
+  const centralY = Math.floor(world.length * 0.5);
+  const centralX = Math.floor(world[0].length * 0.5);
+
+  return { y: centralY, x: centralX };
+}
+
+function quadrants() {
+  const center = centerPoint();
+  const quarters = {
+    q1: { yStart: 0, yEnd: center.y, xStart: 0, xEnd: center.x },
+    q2: {
+      yStart: 0,
+      yEnd: center.y,
+      xStart: center.x + 1,
+      xEnd: world[0].length,
+    },
+    q3: { yStart: center.y + 1, yEnd: world.length, xStart: 0, xEnd: center.x },
+    q4: {
+      yStart: center.y + 1,
+      yEnd: world.length,
+      xStart: center.x + 1,
+      xEnd: world[0].length,
+    },
+  };
+
+  return quarters;
+}
+
+function percentageRange(percentage) {
+  const range = Math.ceil(world.length * percentage);
+
+  return { low: world.length - range, high: world.length + range };
+}
+
+function selectLocationRandomly(available) {
+  return available[Math.floor(Math.random() * available.length)];
+}
+
+function setWinningScore() {
+  const existing = parseInt(
+    document.querySelector("#score span+span").innerHTML
+  );
+  let values = worldTraverse(worldValue);
+  values = values.map((y) => (y === 1 ? 20 : y === 5 ? 50 : 0));
+  const sum = values.reduce((b, a) => b + a, 0);
+
+  score.winning = existing > 0 ? sum + existing : sum;
+}
+
+function worldValue(y, x, val) {
+  return val === 1 || val === 5 ? val : 0;
 }
 
 function runGhosts() {
-  const interval =
-    difficulty === "easy" ? 500 : difficulty === "medium" ? 250 : 150;
+  const interval = level === "easy" ? 500 : level === "medium" ? 250 : 150;
   let run = setInterval(function () {
     if (gamePlay === false) {
       clearInterval(run);
@@ -524,54 +538,83 @@ function runGhosts() {
     }
   }, interval);
 }
-document.onkeydown = checkKey;
 
-const keys = { 37: 1, 38: 1, 39: 1, 40: 1 };
+function moveGhosts() {
+  const ghosts = document.querySelectorAll(".ghost");
 
-function preventDefault(e) {
-  e.preventDefault();
-}
-
-function preventDefaultForScrollKeys(e) {
-  if (keys[e.keyCode]) {
-    preventDefault(e);
-    return false;
+  for (const ghost of ghosts) {
+    setCourse(ghost);
   }
 }
 
-// modern Chrome requires { passive: false } when adding event
-var supportsPassive = false;
-try {
-  window.addEventListener(
-    "test",
-    null,
-    Object.defineProperty({}, "passive", {
-      get: function () {
-        supportsPassive = true;
-      },
-    })
+function setCourse(ghost) {
+  const y = parseInt(ghost.dataset.y);
+  const x = parseInt(ghost.dataset.x);
+
+  //Get values from adjacent squares
+  const position = positionDetails(world[y], y, x);
+  //Set possible move array
+  let possibleMoves = [];
+  //remove possible moves that are not available due to bricks
+
+  const obj = Object.entries(position);
+  for (let i = 0; i < 4; i++) {
+    const direction = obj[i][0];
+    const squareValue = obj[i][1].val;
+    //remove possible moves where a brick, ghost
+    squareValue !== 2 && squareValue !== 4
+      ? possibleMoves.push(direction)
+      : null;
+  }
+  //Select move direction at random
+  const randomMove = Math.floor(Math.random() * possibleMoves.length);
+  const move = possibleMoves[randomMove];
+
+  const newCoordinates = position[move];
+  redrawGhost(ghost, newCoordinates);
+}
+
+function redrawGhost(el, move) {
+  updateGhostWorld(el, move);
+
+  const killedAPac = pacCollision(move);
+
+  //If killdAPac returns three stop the game, otherwise kill twopac and continue
+  killedAPac ? (killedAPac === 3 ? stopGame(3) : killedATwopac()) : null;
+}
+
+function updateGhostWorld(el, move) {
+  // * remove old position from array
+  ghosts[el.dataset.y][el.dataset.x] = 0;
+  //update ghosts array
+  ghosts[move.y][move.x] = 4;
+
+  const ghostType = el.dataset.ghost;
+
+  //remove ghost class
+  el.classList.remove("ghost");
+
+  //remove ghost data attributes
+  delete el.dataset.ghost;
+
+  const newPosition = ghostWorld.querySelector(
+    '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
   );
-} catch (e) {}
 
-var wheelOpt = supportsPassive ? { passive: false } : false;
-var wheelEvent =
-  "onwheel" in document.createElement("div") ? "wheel" : "mousewheel";
+  //carry over ghost type data attribute from old position
+  newPosition.dataset.ghost = ghostType;
 
-// call this to Disable
-function disableScroll() {
-  window.addEventListener("DOMMouseScroll", preventDefault, false); // older FF
-  window.addEventListener(wheelEvent, preventDefault, wheelOpt); // modern desktop
-  window.addEventListener("touchmove", preventDefault, wheelOpt); // mobile
-  window.addEventListener("keydown", preventDefaultForScrollKeys, false);
+  //add ghost class name
+  newPosition.classList.add("ghost");
 }
 
-// call this to Enable
-function enableScroll() {
-  window.removeEventListener("DOMMouseScroll", preventDefault, false);
-  window.removeEventListener(wheelEvent, preventDefault, wheelOpt);
-  window.removeEventListener("touchmove", preventDefault, wheelOpt);
-  window.removeEventListener("keydown", preventDefaultForScrollKeys, false);
+function pacCollision(move) {
+  const pacSpot = pacmen[move.y][move.x];
+
+  return pacSpot === 3 || pacSpot === 6 ? pacSpot : false;
 }
+
+document.onkeydown = checkKey;
 
 function checkKey(e) {
   e = e || window.event;
@@ -590,9 +633,6 @@ function checkKey(e) {
     : isTwopac
     ? document.getElementById("twopac")
     : null;
-
-  //select characters global object
-  const character = isPacman ? pacman : isTwopac ? twopac : null;
 
   const direction = isPacman
     ? e.keyCode == "38"
@@ -616,99 +656,97 @@ function checkKey(e) {
       : null
     : null;
 
-  gamePlay && direction ? movePacmen(direction, el, character) : null;
+  gamePlay && direction ? movePacmen(direction, el) : null;
 }
 
-function movePacmen(direction, el, character) {
+function movePacmen(direction, el) {
+  // change data pacman to "animate" direction
+  el.dataset.pacman = direction;
+
   // * get character's initial position
-  const y = parseInt(character.y);
-  const x = parseInt(character.x);
+  const y = parseInt(el.dataset.y);
+  const x = parseInt(el.dataset.x);
 
   // * get surrounding values
   const position = positionDetails(world[y], y, x);
-
-  // * create no go list starting with brick value 2
-  let noGo = [2];
-  // * make sure other pac character is added to no go list
-  character === pacman ? noGo.push(8) : noGo.push(3);
-
+  // * select value of desired move
   const desiredMove = position[direction];
+  // * set boolean depending on whether value is 2
+  const moveOK = desiredMove.val !== 2;
 
-  //add direction to character HTML element
-  const characterHTML = document.querySelector(
-    '[data-y="' + y + '"][data-x="' + x + '"]'
-  );
-  characterHTML.dataset.pacman = direction;
-
-  //if the value of the object in desired square doesn't exist in the noGo list allow move!
-  const moveOK = !noGo.includes(desiredMove.val);
+  // * if ok, redraw pacman or twopac
   moveOK
-    ? redrawPacmen(el, position[direction], direction, character)
-    : (playAudio("wallbump.mp3"), animateBump(character, position[direction]));
+    ? redrawPacmen(el, position[direction], direction)
+    : // * otherwise animate bump
+      (playAudio("wallbump.mp3"), animateBump(el, position[direction]));
 }
 
-function redrawPacmen(el, position, direction, character) {
+function redrawPacmen(el, move, direction) {
   //False means character is twopac
-  const isPacman = character === pacman;
-  //3 = Pacman, 8 = Twopac
-  const characterVal = isPacman ? 3 : 8;
-  //Update world map array
-  const squareValue = updateWorldArray(characterVal, position);
+  const isPacman = el.id === "pacman";
+  //3 = Pacman, 6 = Twopac
+  const character = isPacman ? 3 : 6;
 
-  //Update character object
-  character.x = position.x;
-  character.y = position.y;
+  //update the PacLand array
+  pacMove(character, move, direction, el);
 
-  //Update old pacman HTML element
-  el.removeAttribute("id");
-  el.classList.add("empty");
-  delete el.dataset.pacman;
-
-  //Select new pacman HTML element
-  const newPosition = document.querySelector(
-    '[data-y="' + position.y + '"][data-x="' + position.x + '"]'
-  );
-
-  //Update new pacman HTML element
-  isPacman
-    ? newPosition.setAttribute("id", "pacman")
-    : newPosition.setAttribute("id", "twopac");
-  newPosition.dataset.pacman = direction;
-
+  const worldValue = world[move.y][move.x];
   //If new position is a coin...
   /*
    * Update score by 20 points
    * Remove coin class & add empty
    */
-  newPosition.classList.contains("coin")
-    ? (updateScore(20),
-      munchModulo(),
-      newPosition.classList.remove("coin"),
-      newPosition.classList.add("empty"))
+  worldValue === 1
+    ? (updateScore(20), munchModulo(), updateWorld(move, 0))
     : //If new position is a Cherry...
     /*
      * Update score by 50 points
      * Remove cherries class & add empty
      */
-    newPosition.classList.contains("cherries")
-    ? (updateScore(50),
-      playAudio("eat_fruit.wav"),
-      newPosition.classList.remove("cherries"),
-      newPosition.classList.add("empty"))
-    : //If new position is mystery box, update score
-    newPosition.classList.contains("mystery-box")
-    ? (updateScore(80),
-      newPosition.classList.remove("mystery-box"),
-      newPosition.classList.add("empty"))
-    : //If new position is a Ghost...
-    /*
-     * STOP THE GAME
-     */
-    newPosition.classList.contains("ghost")
-    ? isPacman
-      ? stopGame(squareValue)
-      : killTwopac()
+    worldValue === 5
+    ? (updateScore(50), playAudio("eat_fruit.wav"), updateWorld(move, 0))
     : null;
+
+  const ghostValue = ghosts[move.y][move.x];
+  //If new position is a Ghost...
+  /*
+   * STOP THE GAME
+   */
+  ghostValue === 4 ? (isPacman ? stopGame(3) : killedATwopac()) : null;
+}
+
+function animateBump(el, obj) {
+  el.classList.add("bump");
+  const direction = el.dataset.pacman;
+
+  //if object was a brick
+  if (obj.val === 2) {
+    //find direction bumped
+    const brick = document.querySelector(
+      '[data-y="' + obj.y + '"][data-x="' + obj.x + '"]'
+    );
+
+    const classes = ["bump", `${direction}`];
+    //add class
+    brick.classList.add(...classes);
+
+    //remove it after 100ms
+    setTimeout(() => {
+      brick.classList.remove(...classes);
+      el.classList.remove("bump");
+    }, 100);
+  }
+}
+
+function updateScore(num) {
+  score.current = score.current + num;
+  score.remaining = score.winning - score.current;
+
+  const el = document.querySelector("#score span:not(.description)");
+
+  el.innerHTML = score.current;
+
+  score.remaining < 1 || score.current >= score.winning ? stopGame(1) : null;
 }
 
 let previousMunch = 0;
@@ -725,384 +763,41 @@ function playAudio(file) {
   audio.play();
 }
 
-function animateBump(who, obj) {
-  const characterHTML = document.querySelector(
-    '[data-y="' + who.y + '"][data-x="' + who.x + '"]'
-  );
-  characterHTML.classList.add("bump");
-  const direction = characterHTML.dataset.pacman;
+function pacMove(who, move, direction, el) {
+  // * remove old position from array
+  pacmen[el.dataset.y][el.dataset.x] = 0;
+  // * add new position to array
+  pacmen[move.y][move.x] = who;
 
-  characterHTML.dataset.pacman = direction;
-  //if object was a brick
-  if (obj.val === 2) {
-    //find direction bumped
-    const brick = document.querySelector(
-      '[data-y="' + obj.y + '"][data-x="' + obj.x + '"]'
-    );
+  //Update old pacman HTML element
+  el.removeAttribute("id");
+  delete el.dataset.pacman;
 
-    const classes = ["bump", `${direction}`];
-    //add class
-    brick.classList.add(...classes);
-
-    //remove it after 100ms
-    setTimeout(() => {
-      brick.classList.remove(...classes);
-      characterHTML.classList.remove("bump");
-    }, 100);
-  }
-}
-
-function updateScore(score) {
-  const el = document.querySelector("#score span:not(.description)");
-  const currentScore = parseInt(el.innerHTML);
-  const newScore = currentScore + score;
-
-  el.innerHTML = newScore;
-
-  /* If the new score is within 80 points of the winning score
-   * There's probably an orphan coin
-   * Place the mystery box to get to the winning score
-   */
-  newScore >= winningScore - 80 && mysteryBox === false
-    ? placeMysteryBox()
-    : null;
-
-  newScore >= winningScore ? stopGame(1) : null;
-}
-
-function updateWorldArray(num, direction) {
-  //start by removing character from world array
-  removeCharacterFromWorld(num, 1);
-
-  // if new position is not a ghost, move pacman's value 3 to new position
-  // otherwise 6 = dead pacman
-  world[direction.y][direction.x] !== 4
-    ? (world[direction.y][direction.x] = num)
-    : //If this is a ghost, use 6 for dead pacman & 11 for dead twopac
-      (world[direction.y][direction.x] = num + 3);
-
-  return world[direction.y][direction.x];
-}
-
-function moveGhosts() {
-  const ghosts = document.querySelectorAll(".ghost");
-
-  for (const ghost of ghosts) {
-    setCourse(ghost);
-  }
-}
-
-function newGhosts() {
-  for (let i = 0; i < numGhosts; i++) {
-    const location = findRandomSpot();
-    console.log(location);
-    const spot = location[Math.floor(Math.random() * location.length)];
-    world[location[0]["y"]][location[0]["x"]] = 4;
-  }
-
-  ressurectGhosts();
-}
-
-function ressurectGhosts() {
-  let locations = [];
-  for (let y = 0; y < world.length; y++) {
-    if (locations.length >= numGhosts) {
-      break;
-    }
-    world[y].map((row, x) => {
-      row === 4 ? (locations.push(y), locations.push(x)) : null;
-    });
-  }
-
-  drawGhosts(locations);
-}
-
-function drawGhosts(coordinates) {
-  console.log(coordinates);
-  for (let i = 0; i < coordinates.length; i + 2) {
-    const target = document.querySelector(
-      '[data-y="' + coordinates[i] + '"][data-x="' + coordinates[i + 1] + '"]'
-    );
-
-    target.classList.add("ghost");
-    target.dataset.ghost = i;
-  }
-}
-
-function findRandomSpot() {
-  // const randY = Math.floor(Math.random() * (world.length - 1));
-  // const randX = Math.floor(Math.random() * (world[0].length - 1));
-  // const randomSpot = world[randY][randX];
-
-  // let result = {};
-
-  // if (randomSpot < 2) {
-  //   result.y = randY;
-  //   result.x = randX;
-  //   return result;
-  // } else {
-  //   findRandomSpot();
-  // }
-
-  let locations = [];
-  for (let y = 0; y < world.length; y++) {
-    if (locations.length >= numGhosts) {
-      break;
-    }
-    world[y].map((row, x) => {
-      row === 0 ? (locations.push({ y: y }), locations.push({ x: x })) : null;
-    });
-  }
-
-  return locations;
-}
-
-function setCourse(ghost) {
-  const y = parseInt(ghost.dataset.y);
-  const x = parseInt(ghost.dataset.x);
-
-  //Get values from adjacent squares
-  const position = positionDetails(world[y], y, x);
-  //Set possible move array
-  let possibleMoves = [];
-  //remove possible moves that are not available due to bricks
-
-  const obj = Object.entries(position);
-  for (let i = 0; i < 4; i++) {
-    const direction = obj[i][0];
-    const squareValue = obj[i][1].val;
-    //remove possible moves where a brick, ghost, or mysterybox are present
-    squareValue !== 2 && squareValue !== 4 && squareValue !== 7
-      ? possibleMoves.push(direction)
-      : null;
-  }
-
-  //Select move direction at random
-  const randomMove = Math.floor(Math.random() * possibleMoves.length);
-  const move = possibleMoves[randomMove];
-
-  const newCoordinates = position[move];
-  redrawGhost(ghost, newCoordinates);
-}
-
-function removeOption(item, array) {
-  const index = array.indexOf(item);
-  if (index !== -1) {
-    array.splice(index, 1);
-  }
-  return array;
-}
-
-function redrawGhost(oldGhost, newGhost) {
-  const ghostType = oldGhost.dataset.ghost;
-  const reserve = oldGhost.dataset.reserve ? oldGhost.dataset.reserve : 1;
-
-  //remove ghost class
-  oldGhost.classList.remove("ghost");
-
-  //Apply class to old position since the ghost does not "consume" anything
-  if (oldGhost.dataset.reserve === undefined) {
-    oldGhost.classList.add("coin");
-  } else {
-    oldGhost.dataset.reserve === "0"
-      ? oldGhost.classList.add("empty")
-      : oldGhost.dataset.reserve === "1"
-      ? oldGhost.classList.add("coin")
-      : oldGhost.dataset.reserve === "5"
-      ? oldGhost.classList.add("cherries")
-      : null;
-  }
-
-  //remove ghost and reserve data attributes
-  delete oldGhost.dataset.ghost;
-  delete oldGhost.dataset.reserve;
-
+  //Select new pacman HTML element
   const newPosition = document.querySelector(
-    '[data-y="' + newGhost.y + '"][data-x="' + newGhost.x + '"]'
+    '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
   );
 
-  //add reserve value to restore when Ghost moves on
-  newPosition.dataset.reserve = world[newGhost.y][newGhost.x];
-  //carry over ghost type data attribute from old position
-  newPosition.dataset.ghost = ghostType;
-  //clear new position classList
-  newPosition.className = "";
-  //add ghost class name
-  newPosition.classList.add("ghost");
-
-  const previousSquare = {
-    x: parseInt(oldGhost.dataset.x),
-    y: parseInt(oldGhost.dataset.y),
-    val: parseInt(reserve),
-  };
-  const squareValue = ghostWorldArray(previousSquare, newGhost);
-
-  squareValue === 6
-    ? stopGame(squareValue)
-    : squareValue === 11 || squareValue === 8
-    ? killTwopac()
-    : null;
+  //Update new pacman HTML element
+  who === 3
+    ? newPosition.setAttribute("id", "pacman")
+    : newPosition.setAttribute("id", "twopac");
+  newPosition.dataset.pacman = direction;
 }
+function updateWorld(move, value) {
+  world[move.y][move.x] = value;
 
-function ghostWorldArray(oldSQ, newSQ) {
-  removeCharacterFromWorld(4, numGhosts);
-  world[newSQ.y][newSQ.x] !== 3
-    ? (world[newSQ.y][newSQ.x] = 4)
-    : (world[newSQ.y][newSQ.x] = 6);
-
-  return world[newSQ.y][newSQ.x];
-}
-
-function drawMysteryBox(location) {
-  const mysteryBoxHTML = document.querySelector(
-    '[data-y="' + location.y + '"][data-x="' + location.x + '"]'
+  const spot = document.querySelector(
+    '#gameboard [data-y="' + move.y + '"][data-x="' + move.x + '"]'
   );
-
-  mysteryBoxHTML.className = "";
-  mysteryBoxHTML.classList.add("mystery-box");
+  spot.className = "";
+  delete spot.dataset.score;
 }
 
 function stopGame(state) {
   gamePlay = false;
-  //If pacman collided with a ghost...
-  /*
-   * Animate pacman death
-   * Remove life & generate new map if lives left
-   */
-  state === 6 ? pacmanDead() : pacWon();
-}
 
-function pacmanDead() {
-  const el = document.querySelector(
-    '[data-y="' + pacman.y + '"][data-x="' + pacman.x + '"]'
-  );
-
-  el.classList.add("dead");
-  delete el.dataset.pacman;
-  playAudio("death_1.wav");
-  gameBoard.classList.add("pacman-dead");
-
-  removeLife(el);
-}
-
-function killTwopac() {
-  const el = document.getElementById("twopac");
-  //switch to single player mode to prevent further movement
-  players = 1;
-  el.classList.add("dead");
-  gameBoard.classList.add("pacman-dead");
-  playAudio("death_1.wav");
-  //Re-enable gameplay
-
-  setTimeout(() => {
-    el.removeAttribute("id");
-    delete el.dataset.pacman;
-
-    gameBoard.classList.remove("pacman-dead");
-    removeCharacterFromWorld(8, 1);
-
-    const twopacLives = document.querySelector(".lives .twopac");
-    const lifeValue = twopacLives.innerHTML.match(/1/g);
-
-    // * re-enable two player mode
-    players = 2;
-
-    lifeValue !== null
-      ? ((twopacLives.innerHTML = twopacLives.innerHTML.slice(0, -1)),
-        twoPacs())
-      : // If lives are 0, revert to single player mode
-        (players = 1);
-  }, 1500);
-}
-
-function removeLife(el) {
-  const lifeMeter = document.getElementById("lives");
-  const lifeValue = lifeMeter.innerHTML.match(/1/g);
-
-  //If there are lives left
-  /*
-   * Remove a life
-   * Place Pacman
-   */
-  lifeValue !== null
-    ? ((lifeMeter.innerHTML = lifeMeter.innerHTML.slice(0, -1)),
-      restartGame(el))
-    : // If lives are 0
-      /*
-       * Run game over animation
-       */
-      gameOver(lifeMeter);
-}
-
-function restartGame(el) {
-  setTimeout(() => {
-    removePacman(el);
-  }, 800);
-  setTimeout(() => {
-    pacResurrection();
-    runGhosts();
-    gamePlay = true;
-  }, 1500);
-}
-
-function removePacman(el) {
-  gameBoard.classList.remove("pacman-dead");
-  el.removeAttribute("id");
-  el.className = "";
-  //remove from world array
-  removeCharacterFromWorld(3, 1);
-}
-
-function removeCharacterFromWorld(num, expected) {
-  let found = 0;
-  for (let y = 0; y < world.length; y++) {
-    //remove all matching values from world array
-    world[y] = world[y] = world[y].map((x, i) => {
-      x === num ? found++ : found;
-      // * if x is the character number
-      // * and index is greater than number of characters allowed,
-      // * remove character from array
-      return x === num && found >= expected ? (x = 0) : (x = x);
-    });
-  }
-}
-
-function pacResurrection() {
-  //Remove pacman's death from board
-  removeCharacterFromWorld(6, 1);
-  //Update world array with resurrected pacman position
-  placePacman();
-  playAudio("death_2.wav");
-
-  const newPosition = document.querySelector(
-    '[data-y="' + pacman.y + '"][data-x="' + pacman.x + '"]'
-  );
-
-  newPosition.className = "";
-  newPosition.setAttribute("id", "pacman");
-
-  const ghosts = document.querySelectorAll(".ghost");
-
-  //If not enough ghosts, generate new ones
-  ghosts.length < numGhosts ? newGhosts() : null;
-}
-
-function gameOver(lives) {
-  gameBoard.classList.add("game-over");
-  const pacEl = document.querySelector(
-    '[data-y="' + pacman.y + '"][data-x="' + pacman.x + '"]'
-  );
-  pacEl.classList.add("dead");
-  clearBoard();
-  announceGameOver();
-  clearScore();
-
-  setTimeout(() => {
-    pacEl.removeAttribute("id");
-
-    //Reset life meter
-    lives.innerHTML = "111";
-  }, 1500);
+  state === 1 ? pacWon() : pacmanDead();
 }
 
 function pacWon() {
@@ -1114,7 +809,7 @@ function pacWon() {
   setTimeout(() => {
     //Add to life meter
     lives.innerHTML += "1";
-    generateMap(difficulty);
+    gameInit(level);
   }, 1500);
 }
 
@@ -1126,9 +821,8 @@ function clearBoard() {
     board[square].dataset.x !== "0" &&
     board[square].dataset.x !== maxRow &&
     board[square].dataset.y !== "0" &&
-    board[square].dataset.y !== maxRow &&
-    board[square].getAttribute("id") !== "pacman"
-      ? ((board[square].className = ""), board[square].classList.add("empty"))
+    board[square].dataset.y !== maxRow
+      ? (board[square].className = "")
       : null;
   }
 }
@@ -1147,6 +841,180 @@ function announceGameOver() {
   gameBoard.prepend(el);
 
   setHighScores();
+}
+
+function pacmanDead() {
+  const el = document.getElementById("pacman");
+
+  el.classList.add("dead");
+  delete el.dataset.pacman;
+  playAudio("death_1.wav");
+  gameBoard.classList.add("pacman-dead");
+
+  removeLife(el);
+}
+
+function removeLife(el) {
+  const lifeMeter = document.getElementById("lives");
+  const lifeValue = lifeMeter.innerHTML.match(/1/g);
+
+  //If there are lives left
+  /*
+   * Remove a life
+   * Place Pacman
+   */
+  lifeValue !== null
+    ? ((lifeMeter.innerHTML = lifeMeter.innerHTML.slice(0, -1)), restartGame())
+    : // If lives are 0
+      /*
+       * Run game over animation
+       */
+      gameOver(lifeMeter);
+}
+
+function gameOver(lives) {
+  gameBoard.classList.add("game-over");
+  const pacEl = document.getElementById("pacman");
+
+  pacEl.classList.add("dead");
+  clearBoard();
+  announceGameOver();
+  clearScore();
+
+  setTimeout(() => {
+    pacEl.removeAttribute("id");
+
+    //Reset life meter
+    lives.innerHTML = "111";
+  }, 1500);
+}
+
+function restartGame() {
+  setTimeout(() => {
+    removePacman(3);
+  }, 800);
+  setTimeout(() => {
+    pacResurrection();
+    runGhosts();
+    gamePlay = true;
+  }, 1500);
+}
+
+function removePacman(pac) {
+  gameBoard.classList.remove("pacman-dead");
+
+  const el =
+    pac === 3
+      ? document.getElementById("pacman")
+      : document.getElementById("twopac");
+
+  el.removeAttribute("id");
+  el.className = "";
+  delete el.dataset.pacman;
+
+  //remove from world array
+  pacmen[el.dataset.y][el.dataset.x] = 0;
+}
+
+function pacResurrection() {
+  const available = worldTraverse(pacGamePlayPlace);
+  const location = selectLocationRandomly(available);
+
+  //place pacman
+  pacmen[location[0]][location[1]] = 3;
+
+  const newPosition = pacLand.querySelector(
+    '[data-y="' + location[0] + '"][data-x="' + location[1] + '"]'
+  );
+
+  newPosition.setAttribute("id", "pacman");
+  playAudio("death_2.wav");
+}
+
+let recent = 0;
+const delay = 20;
+function killedATwopac() {
+  //debounce
+  if (recent >= Date.now() - delay) {
+    console.log("debounce");
+    return;
+  }
+  //switch to single player mode to prevent further movement
+  players = 1;
+
+  const el = document.getElementById("twopac");
+  el.classList.add("dead");
+  playAudio("death_1.wav");
+  gameBoard.classList.add("pacman-dead");
+
+  setTimeout(() => {
+    removePacman(6);
+
+    const twopacLives = document.querySelector(".lives .twopac");
+    const lifeValue = twopacLives.innerHTML.match(/1/g);
+
+    // * re-enable two player mode
+
+    lifeValue !== null
+      ? ((twopacLives.innerHTML = twopacLives.innerHTML.slice(0, -1)),
+        twoPacs())
+      : // If lives are 0, revert to single player mode
+        (players = 1);
+  }, 1500);
+}
+
+function onePac() {
+  //if there were two players, we need to do clean up
+  players === 2 ? revokeTwopac() : null;
+
+  //Set players to 1
+  players = 1;
+}
+
+function twoPacs() {
+  //If this is the first time
+  const hasLives = document.querySelector(".lives .twopac");
+  !hasLives ? setTwopacLives() : null;
+
+  // * re-enable two player mode
+  players = 2;
+  //If game is ongoing, draw twopac immediately
+  if (gamePlay === true) {
+    //place twopac in world array
+    const available = worldTraverse(twoPacPlace);
+    const location = selectLocationRandomly(available);
+    //place pacman
+    pacmen[location[0]][location[1]] = 6;
+    //draw twopac
+    invokeTwoPac(location);
+  }
+}
+
+function setTwopacLives() {
+  const el = document.querySelector(".lives .player-2");
+  el.innerHTML += '<div class="twopac">111</div>';
+}
+
+function invokeTwoPac(loc) {
+  const newPosition = pacLand.querySelector(
+    '[data-y="' + loc[0] + '"][data-x="' + loc[0] + '"]'
+  );
+
+  newPosition.setAttribute("id", "twopac");
+  playAudio("death_2.wav");
+}
+
+function revokeTwopac() {
+  const el = document.getElementById("twopac");
+
+  //reset HTML
+  el ? (el.removeAttribute("id"), delete el.dataset.pacman) : null;
+
+  //remove twopac from world array
+  pacmen[el.dataset.y][el.dataset.x];
+
+  //remove lives
+  document.querySelector(".lives .twopac").remove();
 }
 
 function setHighScores() {
@@ -1175,62 +1043,12 @@ function setHighScores() {
 }
 
 function clearScore() {
-  const score = document.querySelector("#score>span:last-of-type");
+  score = {
+    current: 0,
+    remaining: 0,
+    winning: 0,
+  };
+  const scoreHTML = document.querySelector("#score>span:last-of-type");
 
-  score.innerHTML = 0;
-}
-
-function onePac() {
-  //if there were two players, we need to do clean up
-  players === 2 ? revokeTwopac() : null;
-
-  //Set players to 1
-  players = 1;
-}
-
-function twoPacs() {
-  //If this is the first time
-  const hasLives = document.querySelector(".lives .twopac");
-  !hasLives ? setTwopacLives() : null;
-
-  //If twopac died, remove death from board
-  removeCharacterFromWorld(11, 1);
-  players = 2;
-  //If game is ongoing, draw twopac immediately
-  if (gamePlay === true) {
-    //place twopac in world array
-    placeTwoPac();
-    //draw twopac
-    invokeTwoPac();
-  }
-}
-
-function setTwopacLives() {
-  const el = document.querySelector(".lives .player-2");
-  el.innerHTML += '<div class="twopac">111</div>';
-}
-
-function invokeTwoPac() {
-  const newPosition = document.querySelector(
-    '[data-y="' + twopac.y + '"][data-x="' + twopac.x + '"]'
-  );
-
-  newPosition.className = "";
-  newPosition.setAttribute("id", "twopac");
-  playAudio("death_2.wav");
-}
-
-function revokeTwopac() {
-  const twopacEl = document.getElementById("twopac");
-
-  //reset HTML
-  twopacEl
-    ? (twopacEl.removeAttribute("id"), delete twopacEl.dataset.pacman)
-    : null;
-
-  //remove twopac from world array
-  removeCharacterFromWorld(8, 1);
-
-  //remove lives
-  document.querySelector(".lives .twopac").remove();
+  scoreHTML.innerHTML = 0;
 }
