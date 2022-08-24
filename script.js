@@ -11,8 +11,6 @@ let ghosts = [];
 let level = "easy";
 let players = 1;
 let isSuper = false;
-
-//GameAgent global scope variables
 let gamePlay = false;
 let score = {
   current: 0,
@@ -934,13 +932,12 @@ function mushroomsPlease() {
   //Set chance by difficulty
   const chance =
     level === "easy"
-      ? 0.0035
-      : level === "medium"
-      ? 0.006
-      : level === "hard"
       ? 0.009
-      : 0.04;
-  //Set a 1% chance that mushroom will grow
+      : level === "medium"
+      ? 0.01
+      : level === "hard"
+      ? 0.0
+      : 0.1;
   const grow = Math.random() > chance ? false : true;
 
   !mushroomSet && grow ? (growMushroom(), (mushroomSet = true)) : null;
