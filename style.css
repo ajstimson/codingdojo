@@ -1,11 +1,11 @@
 @font-face {
     font-family: 'LiquidCrystal-Bold';
-    src: url('/assets/LiquidCrystal-Bold.woff') format('woff');
+    src: url('./assets/LiquidCrystal-Bold.woff') format('woff');
 }
 
 @font-face {
     font-family: 'Pac-font';
-    src: url('/assets/PAC-FONT.woff') format('woff');
+    src: url('./assets/PAC-FONT.woff') format('woff');
 }
 
 * {
@@ -282,21 +282,21 @@ div.coin::after {
 }
 
 div.mushroom {
-    background-image: url(/assets/mushroom.png);
+    background-image: url(./assets/mushroom.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
 }
 
 #pacman {
-    background-image: url(/assets/pacman.gif);
+    background-image: url(./assets/pacman.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 19px 19px;
 }
 
 #twopac {
-    background-image: url(/assets/twopac.gif);
+    background-image: url(./assets/twopac.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
@@ -484,7 +484,7 @@ div.mushroom {
 }
 
 .ghost {
-    background-image: url(/assets/ghost-1.png);
+    background-image: url(./assets/ghost-1.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;
@@ -503,7 +503,7 @@ div.mushroom {
 }
 
 .cherries{
-    background-image: url(/assets/cherry.png);
+    background-image: url(./assets/cherry.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px 20px;

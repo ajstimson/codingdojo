@@ -967,7 +967,7 @@ function munchModulo() {
 }
 
 function playAudio(file) {
-  var audio = new Audio("/assets/sounds/" + file);
+  var audio = new Audio("./assets/sounds/" + file);
   audio.pause();
   audio.volume = 0.25;
   audio.play();
