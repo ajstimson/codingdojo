@@ -213,6 +213,26 @@ div.brick.bump.right{
     transform: translate(5px, 0);
 }
 
+div.brick.explode {
+    animation: shoot 100ms ease-out infinite;
+    animation-name: shoot, fade;
+}
+
+@keyframes shoot {
+    0% {
+      transform: translate(-312% -345%);
+    }
+  }
+  @keyframes fade {
+    from {
+        opacity: 1;
+      }
+    to {
+      opacity: 0;
+    }
+  }
+
+
 #gameboard.game-over div.brick,
 #gameboard.pacman-dead div.brick{
     animation-name: flash;
@@ -250,22 +270,11 @@ div.coin::after {
 
 }
 
-div.mystery-box {
-    position: relative;
-    animation-name: flash;
-    animation-duration: 500ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear; 
-}
-
-div.mystery-box::after {
-    font-family: 'Pac-font';
-    font-size: 16px;
-    content: 'v';
-    color: yellow;
-    position: absolute;
-    top: 4px;
-    left: 2px;
+div.mushroom {
+    background-image: url(/assets/mushroom.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
 }
 
 #pacman {
@@ -273,6 +282,13 @@ div.mystery-box::after {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 19px 19px;
+}
+
+#twopac {
+    background-image: url(/assets/twopac.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 20px 20px;
 }
 
 #pacman[data-pacman="left"]{
@@ -283,6 +299,10 @@ div.mystery-box::after {
     transform: scaleX(-1) translate(-5px, 0);
 }
 
+#pacman.super[data-pacman="left"]{
+    transform: scaleX(-1) scale(2);
+}
+
 #twopac.bump[data-pacman="left"]{
     transform: translate(-5px, 0);
 }
@@ -291,12 +311,20 @@ div.mystery-box::after {
     transform: scaleX(-1);
 }
 
+#pacman.super[data-pacman="right"]{
+    transform: scale(2);
+}
+
 #twopac.bump[data-pacman="right"]{
     transform: scaleX(-1) translate(5px, 0);
 }
 
 #pacman.bump[data-pacman="right"]{
     transform: translate(5px, 0);
+}
+
+#pacman.bump.super[data-pacman="right"]{
+    transform: scale(2) translate(5px, 0);
 }
 
 #pacman[data-pacman="up"],
@@ -308,10 +336,13 @@ div.mystery-box::after {
     transform: rotate(90deg) translate(5px, 0);;
 }
 
+#pacman.super[data-pacman="down"]{
+    transform: rotate(90deg) scale(2);
+}
+
 #twopac.bump[data-pacman="down"]{
     transform: rotate(-90deg) translate(5px, 0);;
 }
-
 
 #pacman[data-pacman="down"],
 #twopac[data-pacman="up"]{
@@ -320,6 +351,10 @@ div.mystery-box::after {
 
 #pacman.bump[data-pacman="up"]{
     transform: rotate(-90deg) translate(-5px, 0);
+}
+
+#pacman.super[data-pacman="up"]{
+    transform: rotate(-90deg) scale(2);
 }
 
 #twopac.bump[data-pacman="up"]{
@@ -334,19 +369,106 @@ div.mystery-box::after {
     animation-timing-function: linear; 
 }
 
-#twopac {
-    background-image: url(/assets/twopac.gif);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 20px 20px;
-}
-
 @keyframes spin {
     from {
         transform:rotate(0deg)scale(1.1);
     }
     to {
         transform:rotate(-720deg)scale(0);
+    }
+}
+#pacman.super{
+    transform: scale(2);
+}
+#pacman.super.start{
+    animation: super 500ms, super-flash 500ms;
+    animation-timing-function: linear; 
+}
+
+@keyframes super {
+    0% {
+        transform: scale(1);
+    }
+    10% {
+        transform: scale(.75);
+    }
+    20% {
+        transform: scale(1.25);
+    }
+    30% {
+        transform: scale(1);
+        filter: hue-rotate(300deg);
+    }
+    40% {
+        transform: scale(1.5);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    60% {
+        transform: scale(1.75);
+    }
+    70% {
+        transform: scale(1.5);
+    }
+    80% {
+        transform: scale(1.85);
+    }
+    90% {
+        transform: scale(1.75);
+    }
+    100% {
+        transform: scale(2);
+    }
+}
+
+@keyframes super-flash {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+#pacman.super.end{
+    animation: unsuper 500ms, super-flash 500ms;
+    animation-timing-function: linear;
+}
+
+@keyframes unsuper {
+    0% {
+        transform: scale(2);
+    }
+    10% {
+        transform: scale(1.75);
+    }
+    20% {
+        transform: scale(1.85);
+    }
+    30% {
+        transform: scale(1.5);
+    }
+    40% {
+        transform: scale(1.65);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    60% {
+        transform: scale(1.5);
+    }
+    70% {
+        transform: scale(1);
+    }
+    80% {
+        transform: scale(1.25);
+    }
+    90% {
+        transform: scale(.75);
+    }
+    100% {
+        transform: scale(1);
     }
 }
 

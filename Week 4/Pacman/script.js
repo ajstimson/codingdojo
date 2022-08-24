@@ -10,6 +10,7 @@ let ghosts = [];
 //Game characteristics
 let level = "easy";
 let players = 1;
+let isSuper = false;
 
 //GameAgent global scope variables
 let gamePlay = false;
@@ -45,12 +46,14 @@ function gameInit(level) {
 }
 
 //* Generate Map
-function generateMap(level) {
+function generateMap(difficulty) {
   // * enable gameplay
   gamePlay = true;
 
   // * clear gameboard classList
   gameBoard.className = "";
+
+  level = difficulty;
 
   // * create empty world
   world = [];
@@ -474,6 +477,30 @@ function ghostPlace(y, x, val) {
   }
 }
 
+function mushroomPlace(y, x, val) {
+  const pac = document.getElementById("pacman");
+  const pacY = parseInt(pac.dataset.y);
+  const pacX = parseInt(pac.dataset.x);
+  const lowY = pacY > 5 ? pacY - 4 : 1;
+  const highY = pacY > world.length - 5 ? pacY + 4 : world.length - 1;
+  const lowX = pacX > 5 ? pacX - 4 : 1;
+  const highX = pacX > world[0].length - 5 ? pacX + 4 : world[0].length - 1;
+  if (y > lowY && y < highY && x > lowX && x < highX && val !== 2) {
+    return [y, x];
+  }
+}
+
+function findGhostCoins(y, x, val) {
+  const el = gameBoard.querySelector(
+    '[data-y="' + y + '"][data-x="' + x + '"]'
+  );
+  const hasCoin = el.classList.contains("coin");
+
+  if (val === 0 && hasCoin) {
+    return [y, x];
+  }
+}
+
 function centerPoint() {
   const centralY = Math.floor(world.length * 0.5);
   const centralX = Math.floor(world[0].length * 0.5);
@@ -611,7 +638,8 @@ function updateGhostWorld(el, move) {
 function pacCollision(move) {
   const pacSpot = pacmen[move.y][move.x];
 
-  return pacSpot === 3 || pacSpot === 6 ? pacSpot : false;
+  // IF not super and pacman array element is 3 or 6, return value
+  return (!isSuper && pacSpot === 3) || pacSpot === 6 ? pacSpot : false;
 }
 
 document.onkeydown = checkKey;
@@ -672,16 +700,16 @@ function movePacmen(direction, el) {
   // * select value of desired move
   const desiredMove = position[direction];
   // * set boolean depending on whether value is 2
-  const moveOK = desiredMove.val !== 2;
+  const moveOK = determineMoveOkayness(position, desiredMove);
 
   // * if ok, redraw pacman or twopac
   moveOK
-    ? redrawPacmen(el, position[direction], direction)
+    ? redrawPacmen(el, position, position[direction], direction)
     : // * otherwise animate bump
       (playAudio("wallbump.mp3"), animateBump(el, position[direction]));
 }
 
-function redrawPacmen(el, move, direction) {
+function redrawPacmen(el, position, move, direction) {
   //False means character is twopac
   const isPacman = el.id === "pacman";
   //3 = Pacman, 6 = Twopac
@@ -690,6 +718,12 @@ function redrawPacmen(el, move, direction) {
   //update the PacLand array
   pacMove(character, move, direction, el);
 
+  !isSuper
+    ? normalConsumption(isPacman, move)
+    : superConsumption(move, position);
+}
+
+function normalConsumption(isPacman, move) {
   const worldValue = world[move.y][move.x];
   //If new position is a coin...
   /*
@@ -705,6 +739,8 @@ function redrawPacmen(el, move, direction) {
      */
     worldValue === 5
     ? (updateScore(50), playAudio("eat_fruit.wav"), updateWorld(move, 0))
+    : worldValue === 7
+    ? initSuperPac()
     : null;
 
   const ghostValue = ghosts[move.y][move.x];
@@ -715,14 +751,150 @@ function redrawPacmen(el, move, direction) {
   ghostValue === 4 ? (isPacman ? stopGame(3) : killedATwopac()) : null;
 }
 
+function superConsumption(move, position) {
+  const surroundings = describeAllBlocks(position);
+
+  for (const [key, value] of Object.entries(surroundings)) {
+    const y = value.y;
+    const x = value.x;
+    const val = value.val;
+
+    destroyBricks(y, x, val);
+    eatStuff(value);
+  }
+}
+
+function destroyBricks(y, x, val) {
+  // Don't destroy outer bricks
+  if (
+    y === 0 ||
+    x === 0 ||
+    x === world[0].length - 1 ||
+    y === world.length - 1
+  ) {
+    return;
+  }
+
+  if (val === 2) {
+    // select brick
+    const brick = gameBoard.querySelector(
+      '[data-y="' + y + '"][data-x="' + x + '"]'
+    );
+    //remove brick from world array
+    world[y][x] = 0;
+    //TODO: work on animation
+    brick.classList.add("explode");
+    setTimeout(() => {
+      brick.classList.remove("explode", "brick");
+    }, 100);
+  }
+}
+
+function eatStuff(move) {
+  const isGhost = checkGhostWorld(move);
+
+  //eat coins and update score
+  move.val === 1
+    ? (updateScore(20), munchModulo(), updateWorld(move, 0))
+    : move.val === 5
+    ? (updateScore(50), playAudio("eat_fruit.wav"), updateWorld(move, 0))
+    : isGhost
+    ? eatGhost(move)
+    : null;
+}
+
+function doubleCheck() {
+  const ghostCoins = worldTraverse(findGhostCoins);
+  for (let i = 0; i < ghostCoins.length; i++) {
+    const el = gameBoard.querySelector(
+      '[data-y="' + ghostCoins[i][0] + '"][data-x="' + ghostCoins[i][1] + '"]'
+    );
+    el.className = "";
+  }
+}
+
+function checkGhostWorld(move) {
+  const ghostSpot = ghosts[move.y][move.x];
+
+  return ghostSpot === 4 ? true : false;
+}
+
+function eatGhost(move) {
+  playAudio("eat_ghost.wav");
+  //remove from ghost array
+  ghosts[move.y][move.x] = 0;
+
+  //remove from Ghost HTML
+  const ghost = ghostWorld.querySelector(
+    '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
+  );
+
+  ghost.className = "";
+  delete ghost.dataset.ghost;
+}
+
+function determineMoveOkayness(position, move) {
+  //normal pac can't move through bricks
+  let result = !isSuper ? move.val !== 2 : false;
+
+  if (isSuper) {
+    //if super pac runs into an outer wall, return false (can't move)
+    //otherwise they can run through bricks;
+    result =
+      move.y === 0 ||
+      move.x === 0 ||
+      move.x === world[0].length - 1 ||
+      move.y === world.length - 1
+        ? false
+        : true;
+  }
+
+  return result;
+}
+
+function describeAllBlocks(position) {
+  /* ALL BLOCKS OBJ
+   *  p1 p2 p3  *
+   *  p4 😐 p5  *
+   *  p6 p7 p8  *
+   */
+  const allBlocks = {
+    p1: {
+      x: position.up.x - 1,
+      y: position.up.y,
+      val: world[position.up.x - 1][position.up.y],
+    },
+    p2: position.up,
+    p3: {
+      x: position.up.x + 1,
+      y: position.up.y,
+      val: world[position.up.x + 1][position.up.y],
+    },
+    p4: position.left,
+    p5: position.right,
+    p6: {
+      x: position.down.x - 1,
+      y: position.down.y,
+      val: world[position.down.x - 1][position.down.y],
+    },
+    p7: position.down,
+    p8: {
+      x: position.down.x + 1,
+      y: position.down.y,
+      val: world[position.down.x + 1][position.down.y],
+    },
+  };
+  return allBlocks;
+}
+
 function animateBump(el, obj) {
-  el.classList.add("bump");
+  !isSuper ? el.classList.add("bump") : null;
   const direction = el.dataset.pacman;
 
   //if object was a brick
   if (obj.val === 2) {
     //find direction bumped
-    const brick = document.querySelector(
+    const brick = gameBoard.querySelector(
       '[data-y="' + obj.y + '"][data-x="' + obj.x + '"]'
     );
 
@@ -737,7 +909,6 @@ function animateBump(el, obj) {
     }, 100);
   }
 }
-
 function updateScore(num) {
   score.current = score.current + num;
   score.remaining = score.winning - score.current;
@@ -746,7 +917,31 @@ function updateScore(num) {
 
   el.innerHTML = score.current;
 
-  score.remaining < 1 || score.current >= score.winning ? stopGame(1) : null;
+  score.remaining < 1 || score.current >= score.winning
+    ? stopGame(1)
+    : mushroomsPlease();
+}
+let mushroomSet = false;
+function mushroomsPlease() {
+  //Set chance by difficulty
+  const chance = level === "easy" ? 0.005 : level === "medium" ? 0.03 : 0.05;
+  //Set a 1% chance that mushroom will grow
+  const grow = Math.random() > chance ? false : true;
+
+  !mushroomSet && grow ? (growMushroom(), (mushroomSet = true)) : null;
+}
+
+function growMushroom() {
+  const available = worldTraverse(mushroomPlace);
+  const location = selectLocationRandomly(available);
+  world[location[0]][location[1]] = 7;
+
+  const el = gameBoard.querySelector(
+    '[data-y="' + location[0] + '"][data-x="' + location[1] + '"]'
+  );
+  el.className = "";
+  el.classList.add("mushroom");
+  playAudio("grow.wav");
 }
 
 let previousMunch = 0;
@@ -771,10 +966,12 @@ function pacMove(who, move, direction, el) {
 
   //Update old pacman HTML element
   el.removeAttribute("id");
+  // * remove super class if super
+  isSuper ? el.classList.remove("super") : null;
   delete el.dataset.pacman;
 
   //Select new pacman HTML element
-  const newPosition = document.querySelector(
+  const newPosition = pacLand.querySelector(
     '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
   );
 
@@ -783,6 +980,9 @@ function pacMove(who, move, direction, el) {
     ? newPosition.setAttribute("id", "pacman")
     : newPosition.setAttribute("id", "twopac");
   newPosition.dataset.pacman = direction;
+
+  // * add super class if super
+  isSuper ? newPosition.classList.add("super") : null;
 }
 function updateWorld(move, value) {
   world[move.y][move.x] = value;
@@ -797,7 +997,13 @@ function updateWorld(move, value) {
 function stopGame(state) {
   gamePlay = false;
 
-  state === 1 ? pacWon() : pacmanDead();
+  state === 1
+    ? pacWon()
+    : state === 3
+    ? pacmanDead()
+    : state === 8
+    ? superPacPlay()
+    : null;
 }
 
 function pacWon() {
@@ -1051,4 +1257,59 @@ function clearScore() {
   const scoreHTML = document.querySelector("#score>span:last-of-type");
 
   scoreHTML.innerHTML = 0;
+}
+
+function initSuperPac() {
+  stopGame(8);
+  generateSuperPac();
+}
+function generateSuperPac() {
+  const pac = document.getElementById("pacman");
+
+  // * clear mushroom
+  world[pac.dataset.y][pac.dataset.x] = 0;
+  const mushroom = gameBoard.querySelector(
+    '[data-y="' + pac.dataset.y + '"][data-x="' + pac.dataset.x + '"]'
+  );
+  mushroom.className = "";
+
+  pac.classList.add("super", "start");
+  setTimeout(() => {
+    pac.classList.remove("start");
+  }, 1050);
+  playAudio("super.wav");
+}
+
+function superPacPlay() {
+  setTimeout(() => {
+    gamePlay = true;
+    runGhosts();
+    //Set super status to true for 5 seconds
+    tempSuperStatus(5000);
+  }, 500);
+}
+
+function tempSuperStatus(time) {
+  isSuper = true;
+  playAudio("power_pellet.wav");
+  setTimeout(() => {
+    const pac = document.getElementById("pacman");
+
+    pac.classList.add("end");
+    gamePlay = false;
+    setTimeout(() => {
+      pac.classList.remove("end", "super");
+      gamePlay = true;
+      runGhosts();
+      mushroomSet = false;
+    }, 500);
+    superFalse();
+    //Fixes issue where movement was too quick to remove coin class
+    doubleCheck();
+    setWinningScore();
+  }, time);
+}
+
+function superFalse() {
+  isSuper = false;
 }
