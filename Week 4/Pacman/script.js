@@ -776,7 +776,7 @@ function destroyBricks(y, x, val) {
     x === world[0].length - 1 ||
     y === world.length - 1
   ) {
-    playAudio("thwump.wav");
+    playAudio("bump.wav");
     return;
   }
 
