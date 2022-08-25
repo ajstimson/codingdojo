@@ -136,8 +136,6 @@ h1 {
 
 .screen {
     border: 3px solid #fff;
-    flex-grow: 1;
-    margin: 0 25px;
     position: relative;
 }
 
@@ -515,6 +513,7 @@ div.mushroom {
     width: 25%;
     align-items: flex-start;
     justify-content: space-between;
+    margin-left: 25px;
 }
 
 #console>div {

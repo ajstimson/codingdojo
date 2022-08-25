@@ -26,7 +26,7 @@ function gameBoardSize() {
   const width = window.innerWidth * 0.29;
   const gameWidth = Math.round(width / 20) * 20;
 
-  screen.style.width = gameWidth + 40 + "px";
+  screen.style.width = gameWidth + 7 + "px";
   screen.style.height = gameWidth + 7 + "px";
 
   layers.forEach((el) => {
@@ -928,6 +928,9 @@ function updateScore(num) {
 }
 let mushroomSet = false;
 function mushroomsPlease() {
+  if (players === 2) {
+    return;
+  }
   //Set chance by difficulty
   const chance =
     level === "easy"

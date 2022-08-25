@@ -928,6 +928,9 @@ function updateScore(num) {
 }
 let mushroomSet = false;
 function mushroomsPlease() {
+  if (players === 2) {
+    return;
+  }
   //Set chance by difficulty
   const chance =
     level === "easy"
