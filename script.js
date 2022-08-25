@@ -23,7 +23,8 @@ gameBoardSize();
 function gameBoardSize() {
   const screen = document.querySelector(".screen");
   const layers = screen.querySelectorAll(".screen>div");
-  const width = window.innerWidth * 0.29;
+  let width = window.innerWidth * 0.29;
+  width = width > 565 ? 565 : width;
   const gameWidth = Math.round(width / 20) * 20;
 
   screen.style.width = gameWidth + 7 + "px";
