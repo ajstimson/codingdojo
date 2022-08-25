@@ -919,7 +919,8 @@ function animateBump(el, obj) {
 }
 
 function getCoins(direction, position) {
-  console.log(direction, position);
+  if (isSuper) return;
+
   const spot =
     direction === "up"
       ? [position.up.y - 1, position.up.x]
