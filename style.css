@@ -167,7 +167,7 @@ h1 {
     font-size: 3.5em;
     text-align: center;
     animation-name:  fade-in;
-    animation-duration: 1500ms;
+    animation-duration: 2000ms;
     animation-iteration-count: once;
     animation-timing-function: ease-in-out; 
 }

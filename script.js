@@ -1058,7 +1058,9 @@ function announceGameOver() {
   el.classList.add("announcement");
   el.innerHTML = "<h2>GAME OVER</h2>";
   gameBoard.prepend(el);
-  playAudio("game_over.wav");
+  setTimeout(() => {
+    playAudio("game_over.wav");
+  }, 1000);
   setHighScores();
 }
 
