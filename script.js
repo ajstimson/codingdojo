@@ -789,6 +789,7 @@ function destroyBricks(y, x, val) {
     );
     //remove brick from world array
     world[y][x] = 0;
+    updateScore(5);
     //TODO: work on animation
     brick.classList.add("explode");
     playAudio("break.wav");
@@ -807,7 +808,7 @@ function eatStuff(move) {
     : move.val === 5
     ? (updateScore(50), playAudio("eat_fruit.wav"), updateWorld(move, 0))
     : isGhost
-    ? eatGhost(move)
+    ? (eatGhost(move), updateScore(70))
     : null;
 }
 
@@ -919,7 +920,17 @@ function animateBump(el, obj) {
 }
 
 function getCoins(direction, position) {
+  //Don't run if this is super pacman
   if (isSuper) return;
+  //Don't Run if bump is on top or bottom row of gameBoard
+  for (const [key, value] of Object.entries(position)) {
+    const y = value.y;
+
+    if (y === 0 || y === world.length - 1) {
+      return;
+    }
+  }
+
   const spot =
     direction === "up"
       ? [position.up.y - 1, position.up.x]
@@ -932,11 +943,11 @@ function getCoins(direction, position) {
       : null;
 
   const spotValue = world[spot[0]][spot[1]];
-
-  spotValue === 1 ? cashIn(spot) : null;
+  console.log(spotValue);
+  spotValue === 1 || spotValue === 7 ? cashIn(spot, spotValue) : null;
 }
 
-function cashIn(spot) {
+function cashIn(spot, value) {
   const el = gameBoard.querySelector(
     '[data-y="' + spot[0] + '"][data-x="' + spot[1] + '"]'
   );
@@ -945,8 +956,8 @@ function cashIn(spot) {
   world[spot[0]][spot[1]] = 0;
 
   el.classList.add("cashed");
-  playAudio("coin.wav");
-  updateScore(20);
+  value === 1 ? (playAudio("coin.wav"), updateScore(20)) : initSuperPac();
+
   setTimeout(() => {
     el.className = "";
   }, 200);
@@ -959,6 +970,9 @@ function updateScore(num) {
   const el = document.querySelector("#score span:not(.description)");
 
   el.innerHTML = score.current;
+
+  //Suspend score win during super events!
+  if (isSuper) return;
 
   score.remaining < 1 || score.current >= score.winning
     ? stopGame(1)
@@ -1366,6 +1380,8 @@ function tempSuperStatus(time) {
     checkForGhosts();
     //Update winning score
     setWinningScore();
+    //update score
+    updateScore(0);
   }, time);
 }
 
