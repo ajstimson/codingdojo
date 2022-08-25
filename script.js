@@ -710,7 +710,9 @@ function movePacmen(direction, el) {
   moveOK
     ? redrawPacmen(el, position, position[direction], direction)
     : // * otherwise animate bump
-      (playAudio("wallbump.mp3"), animateBump(el, position[direction]));
+      (playAudio("wallbump.mp3"),
+      animateBump(el, position[direction]),
+      getCoins(direction, position));
 }
 
 function redrawPacmen(el, position, move, direction) {
@@ -914,6 +916,41 @@ function animateBump(el, obj) {
     }, 100);
   }
 }
+
+function getCoins(direction, position) {
+  console.log(direction, position);
+  const spot =
+    direction === "up"
+      ? [position.up.y - 1, position.up.x]
+      : direction === "down"
+      ? [position.down.y + 1, position.up.x]
+      : direction === "left"
+      ? [position.left.y, position.left.x - 1]
+      : direction === "right"
+      ? [position.left.y, position.right.x + 1]
+      : null;
+
+  const spotValue = world[spot[0]][spot[1]];
+
+  spotValue === 1 ? cashIn(spot) : null;
+}
+
+function cashIn(spot) {
+  const el = gameBoard.querySelector(
+    '[data-y="' + spot[0] + '"][data-x="' + spot[1] + '"]'
+  );
+
+  //clear world array value
+  world[spot[0]][spot[1]] = 0;
+
+  el.classList.add("cashed");
+  playAudio("coin.wav");
+  updateScore(20);
+  setTimeout(() => {
+    el.className = "";
+  }, 200);
+}
+
 function updateScore(num) {
   score.current = score.current + num;
   score.remaining = score.winning - score.current;
