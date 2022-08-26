@@ -512,6 +512,10 @@ div.mushroom {
     background-size: 20px 20px;
 }
 
+.ghost.stop{
+    background-image: url(./assets/ghost-2.png);
+}
+
 .ghost[data-ghost="2"]{
     filter: hue-rotate(160deg);
 }

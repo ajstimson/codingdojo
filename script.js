@@ -1,3 +1,5 @@
+"use strict";
+
 const gameBoard = document.getElementById("gameboard");
 const pacLand = document.getElementById("pac-land");
 const ghostWorld = document.getElementById("ghost-world");
@@ -48,6 +50,9 @@ function gameInit(level) {
 function generateMap(difficulty) {
   // * enable gameplay
   gamePlay = true;
+
+  // * reset mushroom status
+  mushroomSet = false;
 
   // * clear gameboard classList
   gameBoard.className = "";
@@ -561,10 +566,12 @@ function worldValue(y, x, val) {
 }
 
 function runGhosts() {
-  const interval = level === "easy" ? 500 : level === "medium" ? 250 : 150;
-  let run = setInterval(function () {
+  //clear the interval before starting a new one
+  window.run ? window.clearInterval(run) : null;
+  const interval = level === "easy" ? 400 : level === "medium" ? 250 : 150;
+  window.run = setInterval(function () {
     if (gamePlay === false) {
-      clearInterval(run);
+      clearInterval(window.run);
     } else {
       moveGhosts();
     }
@@ -583,8 +590,12 @@ function setCourse(ghost) {
   const y = parseInt(ghost.dataset.y);
   const x = parseInt(ghost.dataset.x);
 
+  const pacLocation = whereIsPacman();
   //Get values from adjacent squares
   const position = positionDetails(world[y], y, x);
+
+  const bestGuess = seekPacman(pacLocation, position);
+
   //Set possible move array
   let possibleMoves = [];
   //remove possible moves that are not available due to bricks
@@ -592,18 +603,86 @@ function setCourse(ghost) {
   const obj = Object.entries(position);
   for (let i = 0; i < 4; i++) {
     const direction = obj[i][0];
-    const squareValue = obj[i][1].val;
+    const worldVal = obj[i][1].val;
+    const isGhost = checkGhostWorld(position[direction]);
     //remove possible moves where a brick, ghost
-    squareValue !== 2 && squareValue !== 4
-      ? possibleMoves.push(direction)
-      : null;
+    worldVal !== 2 && !isGhost ? possibleMoves.push(direction) : null;
   }
-  //Select move direction at random
-  const randomMove = Math.floor(Math.random() * possibleMoves.length);
-  const move = possibleMoves[randomMove];
 
+  //Select a move direction at random
+  const randomMove =
+    possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+
+  const move = makeDecision(bestGuess, randomMove);
   const newCoordinates = position[move];
   redrawGhost(ghost, newCoordinates);
+}
+
+function whereIsPacman() {
+  const el = document.getElementById("pacman");
+
+  return { y: el.dataset.y, x: el.dataset.x };
+}
+
+function seekPacman(pac, surroundings) {
+  //if Pacman is super, run away
+
+  const obj = Object.entries(surroundings);
+  //create array with y values
+  const whys = obj.map((y, i) => (y = obj[i][1].y));
+  const yMove = closest(whys, pac.y);
+  const yCoordinates = { y: obj[yMove][1].y, x: obj[yMove][1].x };
+
+  const exes = obj.map((x, i) => (x = obj[i][1].x));
+  const xMove = closest(exes, pac.x);
+  const xCoordinates = { y: obj[xMove][1].y, x: obj[xMove][1].x };
+
+  //check to make sure either direction is not a brick or ghost
+  const direction = moveCheck(yCoordinates)
+    ? //favor y movement
+      obj[yMove][0]
+    : obj[xMove][0];
+
+  return direction;
+}
+
+function moveCheck(move) {
+  const isGhost = checkGhostWorld(move);
+  const isBrick = world[move.y][move.x] === 2 ? true : false;
+
+  return !isGhost && !isBrick ? true : false;
+}
+
+function closest(array, num) {
+  let i = 0;
+  let minDiff = 1000;
+  let ans;
+  for (i in array) {
+    const m = Math.abs(num - array[i]);
+    if (m < minDiff) {
+      minDiff = m;
+      //we only want the index because it will match the obj position
+      ans = i;
+    }
+  }
+  return ans;
+}
+
+let decision = 0;
+function makeDecision(bestGuess, randomMove) {
+  const poss =
+    level === "easy" ? 8 : level === "medium" ? 6 : level === "hard" ? 5 : 4;
+
+  decision++;
+  return decision % poss === 0 ? bestGuess : randomMove;
+}
+
+function organizeByCountry(countries) {
+  return countries.reduce((acc, country) => {
+    const { countryName, ...rest } = country;
+
+    return { ...acc, [countryName]: rest };
+  }, {});
 }
 
 function redrawGhost(el, move) {
@@ -616,28 +695,37 @@ function redrawGhost(el, move) {
 }
 
 function updateGhostWorld(el, move) {
-  // * remove old position from array
-  ghosts[el.dataset.y][el.dataset.x] = 0;
-  //update ghosts array
-  ghosts[move.y][move.x] = 4;
+  //clear stop class if last move was stopped
+  el.classList.contains("stop") ? el.classList.remove("stop") : null;
 
-  const ghostType = el.dataset.ghost;
+  //Every once in a while, stop and look around
+  const stop = Math.random() > 0.05 ? false : true;
+  if (stop === false) {
+    // * remove old position from array
+    ghosts[el.dataset.y][el.dataset.x] = 0;
+    //update ghosts array
+    ghosts[move.y][move.x] = 4;
 
-  //remove ghost class
-  el.classList.remove("ghost");
+    const ghostType = el.dataset.ghost;
 
-  //remove ghost data attributes
-  delete el.dataset.ghost;
+    //remove ghost class
+    el.classList.remove("ghost");
 
-  const newPosition = ghostWorld.querySelector(
-    '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
-  );
+    //remove ghost data attributes
+    delete el.dataset.ghost;
 
-  //carry over ghost type data attribute from old position
-  newPosition.dataset.ghost = ghostType;
+    const newPosition = ghostWorld.querySelector(
+      '[data-y="' + move.y + '"][data-x="' + move.x + '"]'
+    );
 
-  //add ghost class name
-  newPosition.classList.add("ghost");
+    //carry over ghost type data attribute from old position
+    newPosition.dataset.ghost = ghostType;
+
+    //add ghost class name
+    newPosition.classList.add("ghost");
+  } else {
+    el.classList.add("stop");
+  }
 }
 
 function pacCollision(move) {
@@ -648,7 +736,8 @@ function pacCollision(move) {
 }
 
 document.onkeydown = checkKey;
-
+let previousDirection;
+let timesPushed = 0;
 function checkKey(e) {
   e = e || window.event;
 
@@ -689,6 +778,10 @@ function checkKey(e) {
       : null
     : null;
 
+  direction === previousDirection
+    ? timesPushed++
+    : ((previousDirection = direction), (timesPushed = 0));
+
   gamePlay && direction ? movePacmen(direction, el) : null;
 }
 
@@ -710,10 +803,17 @@ function movePacmen(direction, el) {
   // * if ok, redraw pacman or twopac
   moveOK
     ? redrawPacmen(el, position, position[direction], direction)
-    : // * otherwise animate bump
+    : timesPushed < 100
+    ? // * otherwise animate bump
       (playAudio("wallbump.mp3"),
       animateBump(el, position[direction]),
-      getCoins(direction, position));
+      getCoins(direction, position))
+    : (destroyBricks(
+        position[direction].y,
+        position[direction].x,
+        position[direction].val
+      ),
+      (timesPushed = 0));
 }
 
 function redrawPacmen(el, position, move, direction) {
@@ -943,7 +1043,6 @@ function getCoins(direction, position) {
       : null;
 
   const spotValue = world[spot[0]][spot[1]];
-  console.log(spotValue);
   spotValue === 1 || spotValue === 7 ? cashIn(spot, spotValue) : null;
 }
 
@@ -1016,12 +1115,24 @@ function munchModulo() {
 
   previousMunch++;
 }
-
+let audio;
+let played = 0;
 function playAudio(file) {
-  var audio = new Audio("./assets/sounds/" + file);
-  audio.pause();
+  audio && audio.currentSrc.includes(file)
+    ? (played++, playModulo(file))
+    : playNow(file);
+}
+
+function playNow(file) {
+  audio = new Audio("./assets/sounds/" + file);
   audio.volume = 0.25;
   audio.play();
+}
+//Prevent audio files from repeating too often
+function playModulo(file) {
+  if (played % 10 === 0) {
+    playNow(file);
+  }
 }
 
 function pacMove(who, move, direction, el) {
@@ -1206,14 +1317,7 @@ function pacResurrection() {
   playAudio("death_2.wav");
 }
 
-let recent = 0;
-const delay = 20;
 function killedATwopac() {
-  //debounce
-  if (recent >= Date.now() - delay) {
-    console.log("debounce");
-    return;
-  }
   //switch to single player mode to prevent further movement
   players = 1;
 
