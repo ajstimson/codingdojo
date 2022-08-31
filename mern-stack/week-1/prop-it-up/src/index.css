@@ -1,0 +1,27 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+}
+
+body{
+  margin: 5% 15%;
+  background-color: #001629;
+}
+
+.App{
+  text-align: left;
+  line-height: 2;
+}
+
+h1{
+  color: aquamarine;
+}
+
+p{
+  color: plum;
+}
