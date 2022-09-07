@@ -1,0 +1,22 @@
+{
+  "name": "codingdojo",
+  "version": "1.0.0",
+  "description": "stuff",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajstimson/codingdojo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajstimson/codingdojo/issues"
+  },
+  "homepage": "https://github.com/ajstimson/codingdojo#readme",
+  "devDependencies": {
+    "codehawk-cli": "^10.0.1"
+  }
+}

@@ -630,11 +630,11 @@ function seekPacman(pac, surroundings) {
   const obj = Object.entries(surroundings);
   //create array with y values
   const whys = obj.map((y, i) => (y = obj[i][1].y));
-  const yMove = closest(whys, pac.y);
+  const yMove = findClosestValue(whys, pac.y);
   const yCoordinates = { y: obj[yMove][1].y, x: obj[yMove][1].x };
 
   const exes = obj.map((x, i) => (x = obj[i][1].x));
-  const xMove = closest(exes, pac.x);
+  const xMove = findClosestValue(exes, pac.x);
   const xCoordinates = { y: obj[xMove][1].y, x: obj[xMove][1].x };
 
   //check to make sure either direction is not a brick or ghost
