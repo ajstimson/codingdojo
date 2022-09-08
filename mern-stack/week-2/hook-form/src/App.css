@@ -1,0 +1,72 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+}
+
+body{
+  background-color: #001629;
+  margin: 5% 15%;
+}
+
+.App{
+  text-align: left;
+}
+
+h1{
+  color: aquamarine;
+}
+
+p{
+  color: plum;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+form div {
+  display: flex;
+  margin: 1rem 0;
+  line-height: 2;
+  background-color: #a2a2a2;
+  padding: 1rem;
+  border-radius: 15px;
+}
+label {
+  color: purple;
+}
+input{
+  flex-grow: 1;
+  border: none;
+  background-color: #a2a2a284;
+  border-radius: 15px;
+  padding:.5rem;
+}
+button{
+  background-color: #001629;
+  color: aliceblue;
+  border: 1px solid aliceblue;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.container {
+  padding: 2rem;
+  background-color: rgb(0, 255, 170);
+  border-radius: 15px;
+  color: #001629;
+}
+
+.container ul li{
+  list-style: none;
+  margin: 1rem 0;
+  color: #001629;
+}
