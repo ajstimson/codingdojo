@@ -1,0 +1,112 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+}
+
+body{
+  background-color: #001629;
+  margin: 5% 15%;
+}
+
+.App{
+  text-align: left;
+}
+
+.App>div{
+  display: flex;
+}
+
+h1{
+  color: aquamarine;
+}
+
+p{
+  color: plum;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+}
+
+.row{
+  display: flex;
+}
+
+.column.tabs{
+  position: relative;
+}
+
+button{
+  background-color: #001629;
+  border: 2px solid aquamarine;
+  color: aquamarine;
+  padding: 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+button:nth-child(even){
+  background-color: #001629;
+  border: 2px solid plum;
+  color: plum;
+}
+
+button.active{
+  background-color: aquamarine;
+  color: #001629;
+}
+
+button.active:nth-child(even){
+  background-color: plum;
+  color: #001629;
+}
+
+
+.card{
+  position: absolute;
+  width: 99.1%;
+}
+.card:not(.active){
+  opacity: 0;
+  transition: all .2s;
+  /* display: none; */
+  z-index: 0;
+}
+
+.card.active{
+  border: 2px solid aquamarine;
+  padding: 15px;
+  background-color: #7fffd481;
+  opacity: 1;
+  z-index: 2;
+}
+
+.card:nth-child(even).active{
+  border: 2px solid plum;
+  padding: 15px;
+  background-color: #dda0dd81;
+}
+
+.card .data{
+  justify-content: center;
+  /* align-items: center; */
+  padding-left: 5rem;
+}
+
+.card li{
+  list-style: none;
+}
+
+.card p{
+  color: aquamarine;
+}
+
+.card:nth-child(odd) p{
+  color: #001629;
+}
