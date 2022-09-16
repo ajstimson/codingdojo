@@ -1,0 +1,83 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  background-color: #001629;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+  padding: 2rem 5rem;
+}
+
+a{
+  color: aliceblue;
+  text-decoration: none;
+}
+
+li{
+  list-style: none;
+}
+
+header{
+  background-color: #060682;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 2rem 5rem;
+}
+
+.row{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+nav{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 20%;
+  background-color: #bf0ac2;
+  margin-right: 25px;
+  padding: 2rem 5rem;
+  height: 65vh;
+}
+
+main{
+  background-color: #060682;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  width: 80%;
+  height: 70vh;
+  justify-content: flex-end;
+}
+
+.sub-contents{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  background-color: #bf0ac2;
+  margin-right: 25px;
+  padding: 2rem;
+  height: 50vh;
+}
+
+main .sub-contents:last-child{
+  margin-right: 0;
+}
+
+.advertisement{
+  background-color: #bf0ac2;
+  width: 100%;
+  height: 15vh;
+  padding: 2rem;
+  margin-top: 25px
+}
