@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
 
-const API = "https://pokeapi.co/api/v2/pokemon?limit=400&offset=0"
+const API = "https://pokeapi.co/api/v2/pokemon?limit=807&offset=0"
 
 const Display = (props) => {
 	const [pokemon, setPokemon] = useState([])
