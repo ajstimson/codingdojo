@@ -4,6 +4,7 @@ import axios from "axios"
 const BatchData = (props) => {
 	const { lookUp, category } = props
 	const [lookUpInfo, setLookUpInfo] = useState([])
+	const [uniqueInfo, setUniqueInfo] = useState([])
 	useEffect(() => {
 		setLookUpInfo([])
 		const getData = async () => {
@@ -27,13 +28,17 @@ const BatchData = (props) => {
 		getData()
 	}, [lookUp, category])
 
+	useEffect(() => {
+		setUniqueInfo([...new Set(lookUpInfo)])
+	}, [lookUpInfo])
+
 	return (
 		<li className="batch-data">
 			<span>{`${category}:`}</span>
-			<span>{`${lookUpInfo
-				.map((info, i) => (i < lookUpInfo.length - 1 ? `${info}, ` : `${info}`))
+			<span>{`${uniqueInfo
+				.map((info, i) => (i < uniqueInfo.length - 1 ? `${info}, ` : `${info}`))
 				.join("")}`}</span>
-			{lookUpInfo.length < 1 && "Looking..."}
+			{uniqueInfo.length < 1 && "N/A"}
 		</li>
 	)
 }
