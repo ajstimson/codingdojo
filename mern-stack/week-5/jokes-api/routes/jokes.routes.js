@@ -1,4 +1,5 @@
 const JokesController = require("../controllers/jokes.controller")
+
 module.exports = (app) => {
 	app.get("/api/jokes", JokesController.findAllJokes)
 	app.post("/api/jokes/new", JokesController.createNewJoke)
