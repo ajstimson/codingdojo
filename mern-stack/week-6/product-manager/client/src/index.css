@@ -1,0 +1,103 @@
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+}
+
+body{
+  background-color: #001629;
+  margin: 5% 15%;
+}
+
+@import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Fira Code', monospace;
+  color: aliceblue;
+}
+
+body{
+  background-color: #001629;
+  margin: 5% 15%;
+}
+
+.App{
+  text-align: left;
+}
+
+.App>div{
+  display: flex;
+}
+
+h1, h2{
+  color: #64c3a3;
+}
+
+p{
+  color: plum;
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+}
+
+.row{
+  display: flex;
+  align-items: center;
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 1em auto;
+}
+
+form>div{
+  margin-bottom: 3rem;
+}
+
+label::first-letter {
+  text-transform:capitalize;
+}
+
+label{
+  width: 20%;
+  flex-shrink: 0;
+}
+
+input{
+  width: 79%;
+}
+
+input, button{
+  border-radius: 15px;
+  padding:.5rem;
+}
+
+input{
+  flex-shrink: 0;
+  border: none;
+  margin-right: 5rem;
+}
+
+input{
+  background-color: #64c3a3;
+  color: #001629;
+}
+
+button{
+  background-color: #001629;
+  border: 2px solid plum;
+  color: plum;
+  cursor: pointer;
+  font-weight: bold;
+}
