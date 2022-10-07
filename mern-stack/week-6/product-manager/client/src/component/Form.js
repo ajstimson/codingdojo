@@ -1,34 +1,60 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
-const Form = (props) => {
+const Form = () => {
 	const fields = ["title", "price", "description"]
-	const [state, setState] = useState({})
+	const [productDetails, setProductDetails] = useState({})
 	const navigate = useNavigate()
+	const { id } = useParams()
 
+	useEffect(() => {
+		id &&
+			axios
+				.get("http://localhost:8000/api/products/" + id)
+				.then((res) => {
+					setProductDetails({
+						title: res.data.title,
+						price: res.data.price,
+						description: res.data.description,
+					})
+				})
+				.catch((err) => console.log("There was a problem", err))
+	}, [id])
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
 		fields.forEach((field) => {
 			const value = e.target[field].value
-			setState((state[field] = value))
+			setProductDetails((productDetails[field] = value))
 		})
 		e.target.reset()
-		createProduct()
+		id ? updateProduct() : createProduct()
 	}
 
 	const createProduct = () => {
-		console.log(state)
 		axios
-			.post("http://localhost:8000/api/products/new", state)
+			.post("http://localhost:8000/api/products/new", productDetails)
 			.then((res) => {
-				navigate("/")
+				navigate("/products")
 			})
 			.catch((err) => {
 				console.log(err)
 			})
 	}
+
+	const updateProduct = () => {
+		axios
+			.put("http://localhost:8000/api/products/update/" + id, productDetails)
+			.then((res) => {
+				navigate("/product/" + id)
+			})
+			.catch((err) => {
+				console.log(err)
+			})
+	}
+
+	console.log(productDetails)
 	return (
 		<form onSubmit={(e) => handleSubmit(e)}>
 			{fields.map((field, i) => (
@@ -40,6 +66,7 @@ const Form = (props) => {
 					<input
 						type="text"
 						name={field}
+						defaultValue={productDetails[field] || ""}
 					></input>
 				</div>
 			))}

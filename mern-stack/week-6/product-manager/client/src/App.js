@@ -29,6 +29,10 @@ function App() {
 							element={<Form />}
 						/>
 						<Route
+							path={"/form/:id"}
+							element={<Form />}
+						/>
+						<Route
 							path={"/product/:id"}
 							element={<SingleProduct />}
 						/>
