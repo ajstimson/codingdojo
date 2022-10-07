@@ -10,7 +10,6 @@
 
 body{
   background-color: #001629;
-  margin: 5% 15%;
 }
 
 @import url(https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css);
@@ -25,7 +24,6 @@ body{
 
 body{
   background-color: #001629;
-  margin: 5% 15%;
 }
 
 .App{
@@ -36,8 +34,34 @@ body{
   display: flex;
 }
 
+nav{
+  width: 100%;
+  background-color: #000c16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5% 0
+}
+
+nav ul{
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+}
+
+nav a{
+  text-decoration: none;
+  color: plum;
+  font-weight: bold;
+}
+
+main{
+  margin: 5% 15%;
+}
+
 h1, h2{
   color: #64c3a3;
+  margin-bottom: 1rem;
 }
 
 p{
@@ -75,6 +99,9 @@ label{
 }
 
 input{
+  background-color: #64c3a3;
+  color: #001629;
+  font-weight: bold;
   width: 79%;
 }
 
@@ -89,15 +116,24 @@ input{
   margin-right: 5rem;
 }
 
-input{
-  background-color: #64c3a3;
-  color: #001629;
-}
-
 button{
   background-color: #001629;
   border: 2px solid plum;
   color: plum;
   cursor: pointer;
   font-weight: bold;
+}
+
+.product-list{
+  display: flex;
+  flex-direction: column;
+}
+
+.product-list>ul+ul{
+  margin-top: 2rem;
+}
+
+nav li, .product-list li{
+  list-style: none;
+  line-height: 1.2;
 }
