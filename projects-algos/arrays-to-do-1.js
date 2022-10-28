@@ -86,3 +86,25 @@ const removeAt = (arr, i) => {
 
 console.log("1. removeAt", removeAt([1000, 3, 204, 77], 1))
 console.log("2. removeAt", removeAt([8, 20, 55, 44, 98], 3))
+
+/* 
+* * * BONUS: Swap Pairs * * * 
+* Swap positions of successive pairs of values of given array. 
+* If length is odd, do not change the final element.
+
+? Examples:
+
+! swapPairs([1,2,3,4]) => [2,1,4,3]
+! swapPairs(["Brendan",true,42]) => [true,"Brendan",42] 
+
+*/
+
+const swapPairs = (arr) => {
+	const newArray = arr.map((x, i) => (i % 2 === 0 ? arr[i + 1] : arr[i - 1]))
+	if (!newArray[newArray.length - 1])
+		newArray[newArray.length - 1] = arr[arr.length - 1]
+	return newArray
+}
+
+console.log("1. swapPairs", swapPairs([1, 2, 3, 4]))
+console.log("1. swapPairs", swapPairs(["Brendan", true, 42]))
