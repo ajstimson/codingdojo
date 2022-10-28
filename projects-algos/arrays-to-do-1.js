@@ -107,4 +107,35 @@ const swapPairs = (arr) => {
 }
 
 console.log("1. swapPairs", swapPairs([1, 2, 3, 4]))
-console.log("1. swapPairs", swapPairs(["Brendan", true, 42]))
+console.log("2. swapPairs", swapPairs(["Brendan", true, 42]))
+
+/* 
+* * * BONUS: Remove Duplicates * * *
+* Given a sorted array, remove duplicate values. Because array 
+* elements are already in order, all duplicate values will be 
+* grouped together. If you already made the Remove At function, 
+* you are welcome to use that! If you solved this using nested 
+* loops, for an extra challenge, try to do it without any nested 
+* loops!
+
+? Examples:
+
+! removeDupes([-2,-2,3.14,5,5,10]) => [-2,3.14,5,10]
+! removeDupes([9,19,19,19,19,19,29]) => [9,19,29] 
+*/
+
+const removeDupes = (arr) => {
+	// ! First attempt - couldn't remove more than one set of dupes
+	// arr.map((x, i) => (x == arr[i + 1] ? arr.splice(i, 1) : arr[i]))
+	// ! Second attempt - only removed the first duplicate in the array (all other duplicates were left)
+	// arr.reduce((prev, curr, i) => {
+	// 	prev === curr && arr.splice(i, 1)
+	// })
+	// ! Thought about filter but then I remembered...
+	//! Third attempt - oh yeah, there's that new Set thing
+	//TODO: look up what exactly "...new Set()" is doing
+	return [...new Set(arr)]
+}
+
+console.log("1. removeDupes", removeDupes([-2, -2, 3.14, 5, 5, 10]))
+console.log("2. removeDupes", removeDupes([9, 19, 19, 19, 19, 19, 29]))
