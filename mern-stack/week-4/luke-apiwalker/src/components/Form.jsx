@@ -1,11 +1,11 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 const Form = (props) => {
 	const [sources, setSources] = useState({})
-	const [category, setcategory] = useState("")
-	const [id, setID] = useState(0)
+	const [selectCat, setSelectCat] = useState("")
+	const [formID, setFormID] = useState(0)
 
 	let navigate = useNavigate()
 
@@ -21,17 +21,20 @@ const Form = (props) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		navigate(category + "/" + id)
+		navigate(selectCat + "/" + formID)
 	}
 
 	const handleChange = (e) => {
-		const val = e.target.value
-		setcategory(e.target.selectedOptions[0].innerText)
+		setSelectCat(e.target.selectedOptions[0].innerText)
 	}
+	console.log(props.parameters.category ? props.parameters.category : 0)
 	return (
 		<form onSubmit={(e) => handleSubmit(e)}>
 			<div className="row half">
-				<select onChange={(e) => handleChange(e)}>
+				<select
+					value={props.parameters.category ? props.parameters.category : 0}
+					onChange={(e) => handleChange(e)}
+				>
 					<option val="0"></option>
 					{sources &&
 						Object.entries(sources).map((x, i) => {
@@ -46,7 +49,7 @@ const Form = (props) => {
 						})}
 				</select>
 				<label>ID: </label>
-				<input onChange={(e) => setID(e.target.value)} />
+				<input onChange={(e) => setFormID(e.target.value)} />
 				<button type="submit">Search</button>
 			</div>
 		</form>
