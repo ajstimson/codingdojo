@@ -132,9 +132,9 @@ const removeDupes = (arr) => {
 	// 	prev === curr && arr.splice(i, 1)
 	// })
 	// ! Thought about filter but then I remembered...
-	//! Third attempt - oh yeah, there's that new Set thing
-	//TODO: look up what exactly "...new Set()" is doing
+	//! Third attempt - oh yeah, there's that ...new Set thing
 	return [...new Set(arr)]
+	//TODO: look up what exactly "...new Set()" is doing
 }
 
 console.log("1. removeDupes", removeDupes([-2, -2, 3.14, 5, 5, 10]))
